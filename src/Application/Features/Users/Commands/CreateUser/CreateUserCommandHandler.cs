@@ -1,11 +1,12 @@
 using Application.Common;
+using Application.Features.Users.Dtos;
 using Application.Features.Users.Interfaces;
 using Domain.ValueObjects;
 using MediatR;
 
 namespace Application.Features.Users.Commands.CreateUser;
 
-public record CreateUserCommand : ICommand<Guid>
+public record CreateUserCommand : ICommand<UserDto>
 {
     public string Email { get; init; }
     public string Name { get; init; }
@@ -15,9 +16,9 @@ public class CreateUserCommandHandler(
     IUserEventStore eventStore,
     IUserSnapshotRepository snapshotRepository
 )
-    : IRequestHandler<CreateUserCommand, Guid>
+    : IRequestHandler<CreateUserCommand, UserDto>
 {
-    public async Task<Guid> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async Task<UserDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         var userId = UserId.New();
         var user = Domain.Aggregates.User.Create(
@@ -28,6 +29,13 @@ public class CreateUserCommandHandler(
         await eventStore.AppendEventsAsync(userId, user.Events, cancellationToken);
         await snapshotRepository.SaveSnapshotAsync(user, cancellationToken);
         
-        return userId.Value;
+        return new UserDto
+        {
+            Id = userId.Value,
+            Email = user.Email,
+            Name = user.Name,
+            CreatedAt = user.CreatedAt,
+            LastModified = user.LastModified,
+        };
     }
 }

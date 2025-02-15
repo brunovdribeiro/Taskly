@@ -22,6 +22,25 @@ public class UserSnapshotRepository : IUserSnapshotRepository
             INSERT INTO user_snapshots (id, name, email, created_at, last_modified, version)
             VALUES (@Id, @Name, @Email, @CreatedAt, @LastModified, @Version)";
         
-        await connection.ExecuteAsync(sql, user);
+        var parameters = new
+        {
+            Id = user.Id.Value,
+            user.Name,
+            user.Email,
+            user.IsActive,
+            user.CreatedAt,
+            user.LastModified,
+            user.Version
+        };
+
+        try
+        {
+            await connection.ExecuteAsync(sql, parameters);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

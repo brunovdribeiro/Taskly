@@ -17,17 +17,25 @@ public class UserEventStore : IUserEventStore
 
     public async Task AppendEventsAsync(UserId userId, IEnumerable<IEvent> events, CancellationToken cancellationToken)
     {
-        var eventData = events.Select(e => new EventData(
-            Uuid.NewUuid(),
-            e.GetType().Name,
-            JsonSerializer.SerializeToUtf8Bytes(e)
-        ));
+        try
+        {
+            var eventData = events.Select(e => new EventData(
+                Uuid.NewUuid(),
+                e.GetType().Name,
+                JsonSerializer.SerializeToUtf8Bytes(e)
+            ));
 
-        await _client.AppendToStreamAsync(
-            $"user-{userId.Value}",
-            StreamState.Any,
-            eventData,
-            cancellationToken: cancellationToken
-        );
+            await _client.AppendToStreamAsync(
+                $"user-{userId.Value}",
+                StreamState.Any,
+                eventData,
+                cancellationToken: cancellationToken
+            );
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

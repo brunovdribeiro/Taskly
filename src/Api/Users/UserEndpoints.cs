@@ -43,9 +43,8 @@ public static class UserEndpoints
             Name = createUserDto.Name
         };
 
-        var userId = await mediator.Send(command, cancellationToken);
-        var user = await userRead.GetByIdAsync(userId, cancellationToken);
+        var user = await mediator.Send(command, cancellationToken);
 
-        return TypedResults.Created($"/api/users/{userId}", user);
+        return TypedResults.Created($"/api/users/{user}", user);
     }
 }

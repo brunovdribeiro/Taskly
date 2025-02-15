@@ -32,8 +32,10 @@ public static class DependencyInjection
 
     private static void AddPostgres(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<ITaskSnapshotRepository>(_ => 
-            new TaskSnapshotRepository(configuration.GetConnectionString("Postgres")!));
+        var connectionString = configuration.GetConnectionString("Postgres")!;
+        services.AddScoped<ITaskSnapshotRepository>(_ => new TaskSnapshotRepository(connectionString));
+        services.AddScoped<IUserSnapshotRepository>(_ => 
+            new UserSnapshotRepository(connectionString));
     }
 
     private static void AddRedis(this IServiceCollection services, IConfiguration configuration)

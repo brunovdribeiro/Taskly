@@ -11,7 +11,7 @@ public class User : AggregateRoot<UserId>
     public string Name { get; private set; }
     public bool IsActive { get; private set; }
     public DateTime CreatedAt { get; private set; }
-    public DateTime? LastModified { get; private set; }
+    public DateTime? LastModified { get; private set; } = DateTime.UtcNow;
 
     private User() { }
 
@@ -23,16 +23,17 @@ public class User : AggregateRoot<UserId>
         if (string.IsNullOrWhiteSpace(name))
             throw new UserDomainException("Name cannot be empty");
 
+        var now = DateTime.UtcNow;
         var user = new User
         {
             Id = id,
             Email = email,
             Name = name,
             IsActive = true,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = now
         };
 
-        user.AddEvent(new UserCreatedEvent(id, email, name));
+        user.AddEvent(new UserCreatedEvent(id, email, name, true, now, now));
         return user;
     }
 
