@@ -1,0 +1,33 @@
+@baseUrl = http://localhost:5000
+
+### Create a new task
+POST {{baseUrl}}/tasks
+Content-Type: application/json
+
+{
+  "title": "Complete project documentation",
+  "description": "Write detailed documentation for the task management system",
+  "dueDate": "2024-04-30T23:59:59Z"
+}
+
+### Get all tasks
+GET {{baseUrl}}/tasks
+
+### Get a specific task
+GET {{baseUrl}}/tasks/task-id-here
+
+### Update a task
+PUT {{baseUrl}}/tasks/task-id-here
+Content-Type: application/json
+
+{
+  "title": "Updated task title",
+  "description": "Updated task description",
+  "dueDate": "2024-05-01T23:59:59Z"
+}
+
+### Complete a task
+PATCH {{baseUrl}}/tasks/task-id-here/complete
+
+### Delete a task
+DELETE {{baseUrl}}/tasks/task-id-here
