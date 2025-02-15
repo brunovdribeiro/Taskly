@@ -1,5 +1,5 @@
 using Domain.Enums;
-using TaskStatus = System.Threading.Tasks.TaskStatus;
+using TaskStatus = Domain.Enums.TaskStatus;
 
 namespace Application.Features.Tasks.Dtos;
 
