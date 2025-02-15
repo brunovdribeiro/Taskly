@@ -13,6 +13,7 @@ var app = builder.Build();
 app.UseOpenApi();
 app.UseSwaggerUi(); 
 
-app.MapTaskEndpoints();
+app.MapTaskEndpoints()
+    .MapUserEndpoints();
 
 app.Run();
