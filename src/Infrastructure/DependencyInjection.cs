@@ -1,5 +1,6 @@
 using Application.Common.Interfaces;
 using Application.Common.Interfacoes;
+using Application.Features.Users.Interfaces;
 using EventStore.Client;
 using Infrastructure.EventStore;
 using Infrastructure.Postgres;
@@ -25,13 +26,14 @@ public static class DependencyInjection
     {
         var settings = EventStoreClientSettings.Create(configuration.GetConnectionString("EventStore")!);
         services.AddSingleton(new EventStoreClient(settings));
-        services.AddScoped<ITaskEventStore, EventStoreDbTaskEventStore>();
+        services.AddScoped<ITaskEventStore, TaskEventStore>();
+        services.AddScoped<IUserEventStore, UserEventStore>();
     }
 
     private static void AddPostgres(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<ITaskSnapshotRepository>(sp => 
-            new PostgresTaskSnapshotRepository(configuration.GetConnectionString("Postgres")!));
+        services.AddScoped<ITaskSnapshotRepository>(_ => 
+            new TaskSnapshotRepository(configuration.GetConnectionString("Postgres")!));
     }
 
     private static void AddRedis(this IServiceCollection services, IConfiguration configuration)
@@ -39,5 +41,6 @@ public static class DependencyInjection
         var redisConnection = new RedisConnectionProvider(configuration.GetConnectionString("Redis")!);
         services.AddSingleton(redisConnection);
         services.AddScoped<ITaskRead, TaskRead>();
+        services.AddScoped<IUserRead, UserRead>();
     }
 }

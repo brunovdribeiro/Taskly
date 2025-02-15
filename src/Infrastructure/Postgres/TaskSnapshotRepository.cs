@@ -5,11 +5,11 @@ using Domain.ValueObjects;
 
 namespace Infrastructure.Postgres;
 
-public class PostgresTaskSnapshotRepository : ITaskSnapshotRepository
+public class TaskSnapshotRepository : ITaskSnapshotRepository
 {
     private readonly string _connectionString;
 
-    public PostgresTaskSnapshotRepository(string connectionString)
+    public TaskSnapshotRepository(string connectionString)
     {
         _connectionString = connectionString;
     }

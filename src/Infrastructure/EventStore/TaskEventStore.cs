@@ -8,7 +8,7 @@ using Domain.Common;
 
 namespace Infrastructure.EventStore;
 
-public class EventStoreDbTaskEventStore(
+public class TaskEventStore(
     EventStoreClient client
 ) : ITaskEventStore
 {
