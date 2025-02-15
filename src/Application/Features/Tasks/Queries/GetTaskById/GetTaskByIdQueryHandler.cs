@@ -7,7 +7,7 @@ using MediatR;
 namespace Application.Features.Tasks.Queries.GetTaskById;
 
 public class GetTaskByIdQueryHandler(
-    ITaskReadModel readModel
+    ITaskRead read
 ) : IRequestHandler<GetTaskByIdQuery, TaskDto>
 {
     public async Task<TaskDto> Handle(
@@ -15,7 +15,7 @@ public class GetTaskByIdQueryHandler(
         CancellationToken cancellationToken
     )
     {
-        var task = await readModel.GetByIdAsync(request.Id, cancellationToken);
+        var task = await read.GetByIdAsync(request.Id, cancellationToken);
 
         if (task is null)
             throw new NotFoundException($"Task with id {request.Id} not found");

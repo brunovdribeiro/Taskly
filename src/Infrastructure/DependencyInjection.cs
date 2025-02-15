@@ -3,6 +3,7 @@ using Application.Common.Interfacoes;
 using EventStore.Client;
 using Infrastructure.EventStore;
 using Infrastructure.Postgres;
+using Infrastructure.Redis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Redis.OM;
@@ -13,18 +14,30 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        // Redis
-        services.AddSingleton(new RedisConnectionProvider(configuration["Redis:ConnectionString"]));
+        services.AddEventStore(configuration);
+        services.AddPostgres(configuration);
+        services.AddRedis(configuration);
         
-        // PostgreSQL
-        services.AddScoped<ITaskSnapshotRepository>(sp => 
-            new PostgresTaskSnapshotRepository(configuration["Postgres:ConnectionString"]));
-        
-        // EventStoreDB
-        services.AddSingleton(new EventStoreClient(EventStoreClientSettings
-            .Create(configuration["EventStore:ConnectionString"])));
-        services.AddScoped<ITaskEventStore, EventStoreDbTaskEventStore>();
-
         return services;
+    }
+
+    private static void AddEventStore(this IServiceCollection services, IConfiguration configuration)
+    {
+        var settings = EventStoreClientSettings.Create(configuration.GetConnectionString("EventStore")!);
+        services.AddSingleton(new EventStoreClient(settings));
+        services.AddScoped<ITaskEventStore, EventStoreDbTaskEventStore>();
+    }
+
+    private static void AddPostgres(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddScoped<ITaskSnapshotRepository>(sp => 
+            new PostgresTaskSnapshotRepository(configuration.GetConnectionString("Postgres")!));
+    }
+
+    private static void AddRedis(this IServiceCollection services, IConfiguration configuration)
+    {
+        var redisConnection = new RedisConnectionProvider(configuration.GetConnectionString("Redis")!);
+        services.AddSingleton(redisConnection);
+        services.AddScoped<ITaskRead, TaskRead>();
     }
 }

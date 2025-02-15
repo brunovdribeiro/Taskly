@@ -2,23 +2,17 @@
 
 using Application.Common.Interfaces;
 using Application.Common.Interfacoes;
-using Application.Features.Tasks.Commands.CreateTask;
 using Domain.ValueObjects;
 using MediatR;
 
-public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Guid>
+namespace Application.Features.Tasks.Commands.CreateTask;
+
+public class CreateTaskCommandHandler(
+    ITaskEventStore eventStore,
+    ITaskSnapshotRepository snapshotRepository
+)
+    : IRequestHandler<CreateTaskCommand, Guid>
 {
-    private readonly ITaskEventStore _eventStore;
-    private readonly ITaskSnapshotRepository _snapshotRepository;
-
-    public CreateTaskCommandHandler(
-        ITaskEventStore eventStore, 
-        ITaskSnapshotRepository snapshotRepository)
-    {
-        _eventStore = eventStore;
-        _snapshotRepository = snapshotRepository;
-    }
-
     public async Task<Guid> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
     {
         var taskId = TaskId.New();
@@ -27,8 +21,8 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Guid>
             request.Title,
             request.Description);
 
-        await _eventStore.AppendEventsAsync(taskId, task.Events, cancellationToken);
-        await _snapshotRepository.SaveSnapshotAsync(task, cancellationToken);
+        await eventStore.AppendEventsAsync(taskId, task.Events, cancellationToken);
+        await snapshotRepository.SaveSnapshotAsync(task, cancellationToken);
         
         return taskId.Value;
     }

@@ -4,7 +4,7 @@ using Redis.OM.Modeling;
 namespace Infrastructure.Redis;
 
 [Document(StorageType = StorageType.Json, Prefixes = new[] { "Task" })]
-public class TaskReadModel
+public class TaskDocument
 {
     [RedisIdField]
     public string Id { get; init; }

@@ -1,8 +1,11 @@
 using Application.Common.Interfaces;
 using Application.Common.Interfacoes;
+using Application.Features.Tasks.Commands.CreateTask;
 using Application.Features.Tasks.Dtos;
 using Domain.ValueObjects;
+using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 public static class TaskEndpoints
 {
@@ -42,12 +45,21 @@ public static class TaskEndpoints
     }
 
     private static async Task<Results<Created<TaskDto>, ValidationProblem>> CreateTask(
-        TaskDto taskDto,
-        ITaskEventStore eventStore,
+        CreateTaskDto createTaskDto,
+        [FromServices] IMediator mediator,
         ITaskSnapshotRepository repository,
         CancellationToken cancellationToken)
     {
-        // Implementation would go here
+        var command = new CreateTaskCommand
+        {
+            Title = createTaskDto.Title,
+            Description = createTaskDto.Description
+        };
+
+        var taskId = await mediator.Send(command, cancellationToken);
+        var task = await repository.GetLatestSnapshotAsync(TaskId.From(taskId), cancellationToken);
+        var taskDto = MapToDto(task);
+
         return TypedResults.Created($"/api/tasks/{taskDto.Id}", taskDto);
     }
 
