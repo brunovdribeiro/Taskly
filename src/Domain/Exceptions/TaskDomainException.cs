@@ -1,6 +1,6 @@
 namespace Domain.Exceptions;
 
-public class TaskDomainException : Exception
+public class TaskDomainException : DomainException
 {
     public TaskDomainException() { }
     public TaskDomainException(string message) : base(message) { }
