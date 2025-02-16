@@ -1,4 +1,20 @@
 services:
+  api:
+    build:
+      context: .
+      dockerfile: src/Api/Dockerfile
+    ports:
+      - "9000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Redis=redis://redis:6379
+      - ConnectionStrings__Postgres=Host=postgres;Database=taskmanager;Username=postgres;Password=postgres
+      - ConnectionStrings__EventStore=esdb://eventstore:2113?tls=false
+    depends_on:
+      - postgres
+      - redis
+      - eventstore
+
   redis:
     image: redislabs/rejson:latest
     ports:
