@@ -1,29 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
     <PropertyGroup>
-        <Description>
-            Taskly is a task management system built with Event Sourcing and CQRS patterns.
-            It demonstrates DDD concepts in a clean architecture, allowing users to create,
-            assign, and track tasks with full event history.
-        </Description>
-        <Authors>brunovdribeiro</Authors>
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <SpaRoot>client/</SpaRoot>
+        <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Application\Application.csproj"/>
-        <ProjectReference Include="..\Domain\Domain.csproj"/>
-        <ProjectReference Include="..\Infrastructure\Infrastructure.csproj"/>
+        <ProjectReference Include="..\Application\Application.csproj" />
+        <ProjectReference Include="..\Domain\Domain.csproj" />
+        <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="NSwag.AspNetCore" Version="14.2.0" />
     </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="NSwag.AspNetCore" Version="14.2.0"/>
-    </ItemGroup>
-
+    <Target Name="BuildReactApp" BeforeTargets="Build">
+        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+        <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+        <ItemGroup>
+            <DistFiles Include="$(SpaRoot)build\**" />
+            <Content Remove="$(SpaRoot)**" />
+            <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+        </ItemGroup>
+        <Copy SourceFiles="@(DistFiles)" DestinationFolder="wwwroot\%(RecursiveDir)" />
+    </Target>
 </Project>
