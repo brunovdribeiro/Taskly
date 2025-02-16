@@ -15,15 +15,20 @@ public class User : AggregateRoot<UserId>
 
     private User() { }
 
-    public static User Create(UserId id, string email, string name)
+    public static User Create(
+        UserId id,
+        string email,
+        string name
+    )
     {
         if (string.IsNullOrWhiteSpace(email))
             throw new UserDomainException("Email cannot be empty");
-            
+
         if (string.IsNullOrWhiteSpace(name))
             throw new UserDomainException("Name cannot be empty");
 
         var now = DateTime.UtcNow;
+
         var user = new User
         {
             Id = id,
@@ -37,7 +42,28 @@ public class User : AggregateRoot<UserId>
         return user;
     }
 
-    protected override void Apply(IEvent @event)
+    public static User Create(
+        UserId id,
+        string email,
+        string name,
+        bool isActive,
+        DateTime createdAt,
+        DateTime? lastModified
+    )
+    {
+        var user = Create(id, email, name);
+
+        user.IsActive = isActive;
+        user.CreatedAt = createdAt;
+        user.LastModified = lastModified;
+
+        user.AddEvent(new UserCreatedEvent(id, email, name, isActive, createdAt, lastModified ?? createdAt));
+        return user;
+    }
+
+    protected override void Apply(
+        IEvent @event
+    )
     {
         switch (@event)
         {

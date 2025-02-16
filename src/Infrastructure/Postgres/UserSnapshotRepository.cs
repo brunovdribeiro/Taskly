@@ -2,6 +2,7 @@ using Dapper;
 using Npgsql;
 using Application.Features.Users.Interfaces;
 using Domain.Aggregates;
+using Domain.ValueObjects;
 using Task = System.Threading.Tasks.Task;
 
 namespace Infrastructure.Postgres;
@@ -36,6 +37,39 @@ public class UserSnapshotRepository : IUserSnapshotRepository
         try
         {
             await connection.ExecuteAsync(sql, parameters);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    public async Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        const string sql = @"
+        SELECT id, name, email, is_active, created_at, last_modified, version
+        FROM user_snapshots
+        WHERE id = @Id";
+
+        var parameters = new { Id = id.Value };
+
+        try
+        {
+            var userRow = await connection.QuerySingleOrDefaultAsync(sql, parameters);
+
+            if (userRow is null)
+                return null;
+
+            return User.Create(
+                UserId.From(userRow.id),
+                userRow.email,
+                userRow.name,
+                userRow.is_active,
+                userRow.created_at,
+                userRow.last_modified
+            );
         }
         catch (Exception e)
         {
