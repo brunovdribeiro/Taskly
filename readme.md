@@ -45,5 +45,5 @@ A sophisticated task management system implementing Event Sourcing and CQRS patt
 
 ### 1. Clone Repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/brunovdribeiro/Taskly.git
 cd taskly
