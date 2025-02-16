@@ -1,4 +1,6 @@
+using Application.Common.Exceptions;
 using Application.Features.Users.Commands.CreateUser;
+using Application.Features.Users.Commands.DeactivateUser;
 using Application.Features.Users.Dtos;
 using Application.Features.Users.Interfaces;
 using Application.Features.Users.Queries.GetUserByIdQuery;
@@ -13,6 +15,8 @@ public static class UserEndpoints
 
         group.MapGet("/{id}", GetUserById);
         group.MapPost("/", CreateUser);
+        group.MapPut("/{id}/deactivate", DeactivateUser); // Add this line
+
 
         return group;
     }
@@ -46,5 +50,23 @@ public static class UserEndpoints
         var user = await mediator.Send(command, cancellationToken);
 
         return TypedResults.Created($"/api/users/{user}", user);
+    }
+    
+    private static async Task<Results<Ok<UserDto>, NotFound>> DeactivateUser(
+        Guid id,
+        IMediator mediator,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeactivateUserCommand { UserId = id };
+        
+        try
+        {
+            var user = await mediator.Send(command, cancellationToken);
+            return TypedResults.Ok(user);
+        }
+        catch (NotFoundException)
+        {
+            return TypedResults.NotFound();
+        }
     }
 }
