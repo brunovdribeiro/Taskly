@@ -1,10 +1,9 @@
 using Application.Common.Interfaces;
 using Domain.ValueObjects;
-using Infrastructure.Persistences.Posgres.Entities;
 using Microsoft.EntityFrameworkCore;
 using Task = Domain.Aggregates.Task;
 
-namespace Infrastructure.Persistences.Posgres.Repositories;
+namespace Infrastructure.Persistences.Posgres.Tasks;
 
 public class TaskSnapshotRepository(
     ApplicationDbContext context

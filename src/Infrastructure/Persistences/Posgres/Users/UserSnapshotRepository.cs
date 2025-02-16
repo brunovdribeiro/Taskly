@@ -1,11 +1,10 @@
 using Application.Features.Users.Interfaces;
 using Domain.Aggregates;
 using Domain.ValueObjects;
-using Infrastructure.Persistences.Posgres.Entities;
 using Microsoft.EntityFrameworkCore;
 using Task = System.Threading.Tasks.Task;
 
-namespace Infrastructure.Persistences.Posgres.Repositories;
+namespace Infrastructure.Persistences.Posgres.Users;
 
 public class UserSnapshotRepository : IUserSnapshotRepository
 {

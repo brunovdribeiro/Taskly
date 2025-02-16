@@ -1,4 +1,5 @@
-using Infrastructure.Persistences.Posgres.Entities;
+using Infrastructure.Persistences.Posgres.Tasks;
+using Infrastructure.Persistences.Posgres.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistences.Posgres;
@@ -16,7 +17,8 @@ public class ApplicationDbContext : DbContext
         ModelBuilder modelBuilder
     )
     {
-        modelBuilder.ApplyConfiguration(new TaskSnapshotConfiguration());
-        modelBuilder.ApplyConfiguration(new UserSnapshotConfiguration());
+        
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
     }
 }
