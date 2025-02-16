@@ -15,7 +15,7 @@ using Redis.OM;
 
 namespace Infrastructure;
 
-public static class DependencyInjection
+public static class DependencyInjectionAdd
 {
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
@@ -48,7 +48,6 @@ public static class DependencyInjection
     {
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("Postgres")));
-        var connectionString = configuration.GetConnectionString("Postgres")!;
         services.AddScoped<ITaskSnapshotRepository, TaskSnapshotRepository>();
         services.AddScoped<IUserSnapshotRepository, UserSnapshotRepository>();
 

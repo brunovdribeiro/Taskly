@@ -9,7 +9,7 @@ public class UserSnapshotConfiguration : IEntityTypeConfiguration<UserSnapshot>
         EntityTypeBuilder<UserSnapshot> builder
     )
     {
-        builder.ToTable("user_snapshots");
+        builder.ToTable("Users");
 
         builder.HasKey(u => new { u.Id, u.Version });
     }

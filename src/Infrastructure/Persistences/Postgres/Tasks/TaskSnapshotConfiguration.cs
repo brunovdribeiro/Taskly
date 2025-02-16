@@ -9,7 +9,7 @@ public class TaskSnapshotConfiguration : IEntityTypeConfiguration<TaskSnapshot>
         EntityTypeBuilder<TaskSnapshot> builder
     )
     {
-        builder.ToTable("task_snapshots");
+        builder.ToTable("Tasks");
 
         builder.HasKey(t => new { t.Id, t.Version });
 

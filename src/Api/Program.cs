@@ -11,7 +11,9 @@ builder.Services.AddInfrastructure(builder.Configuration);
 var app = builder.Build();
 
 app.UseOpenApi();
-app.UseSwaggerUi(); 
+app.UseSwaggerUi();
+
+await app.UseInfrastructure();
 
 app.MapTaskEndpoints()
     .MapUserEndpoints();

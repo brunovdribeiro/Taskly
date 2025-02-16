@@ -4,12 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistences.Posgres;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext(
+    DbContextOptions<ApplicationDbContext> options
+) : DbContext(options)
 {
-    public ApplicationDbContext(
-        DbContextOptions<ApplicationDbContext> options
-    ) : base(options) { }
-
     public DbSet<TaskSnapshot> TaskSnapshots { get; set; }
     public DbSet<UserSnapshot> UserSnapshots { get; set; }
 
@@ -17,8 +15,6 @@ public class ApplicationDbContext : DbContext
         ModelBuilder modelBuilder
     )
     {
-        
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-
     }
 }
