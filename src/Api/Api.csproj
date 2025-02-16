@@ -9,30 +9,48 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Application\Application.csproj" />
-        <ProjectReference Include="..\Domain\Domain.csproj" />
-        <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+        <ProjectReference Include="..\Application\Application.csproj"/>
+        <ProjectReference Include="..\Domain\Domain.csproj"/>
+        <ProjectReference Include="..\Infrastructure\Infrastructure.csproj"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="NSwag.AspNetCore" Version="14.2.0" />
+        <PackageReference Include="NSwag.AspNetCore" Version="14.2.0"/>
+        <PackageReference Include="NSwag.MSBuild" Version="14.2.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
+
+    <Target Name="GenerateSwaggerJson" BeforeTargets="GenerateTypeScriptModels">
+        <!-- Run NSwag -->
+        <Exec Command="$(NSwagExe_Net90) run nswag.json" />
+    </Target>
 
     <ItemGroup>
-      <Content Include="..\..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <None Update="nswag.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
+    
+    <Target Name="GenerateTypeScriptModels" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+        <PropertyGroup>
+            <SwaggerFile>$([System.IO.Path]::Combine($(ProjectDir), 'swagger.json'))</SwaggerFile>
+            <ModelsDir>$([System.IO.Path]::Combine($(ProjectDir), 'client', 'src', 'api', 'generated'))</ModelsDir>
+        </PropertyGroup>
+        <MakeDir Directories="$(ModelsDir)"/>
+        <Exec WorkingDirectory="$(ProjectDir)" Command="$(NSwagExe_Net90) openapi2tsclient /input:$(SwaggerFile) /output:$(ModelsDir)/models.ts /Template:Fetch /generateClientClasses:false /typeStyle:Interface /dateTimeType:Date /markOptionalProperties:true /nullValue:undefined /generateOptionalParameters:true"/>
+    </Target>
 
     <Target Name="BuildReactApp" BeforeTargets="Build">
-        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
-        <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install"/>
+        <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build"/>
         <ItemGroup>
-            <DistFiles Include="$(SpaRoot)build\**" />
-            <Content Remove="$(SpaRoot)**" />
-            <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+            <DistFiles Include="$(SpaRoot)build\**"/>
+            <Content Remove="$(SpaRoot)**"/>
+            <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**"/>
         </ItemGroup>
-        <Copy SourceFiles="@(DistFiles)" DestinationFolder="wwwroot\%(RecursiveDir)" />
+        <Copy SourceFiles="@(DistFiles)" DestinationFolder="wwwroot\%(RecursiveDir)"/>
     </Target>
 </Project>
