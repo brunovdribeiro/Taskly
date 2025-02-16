@@ -1,20 +1,21 @@
 using System.Text;
-using EventStore.Client;
-using Redis.OM;
 using System.Text.Json;
-using Domain.Common;
 using Domain.Events;
-using Infrastructure.Redis;
+using EventStore.Client;
+using Infrastructure.Persistences.Redis.Documents;
+using Redis.OM;
 using Redis.OM.Searching;
+
+namespace Infrastructure.Persistences.EventStore.Subscriptions;
 
 public class UserStreamSubscription
 {
+    private const string StreamName = "$ce-user"; // Category projection for all user streams
+    private const string GroupName = "user-group-sub2";
     private readonly EventStoreClient _eventStoreClient;
     private readonly EventStorePersistentSubscriptionsClient _persistentSubscriptionsClient;
     private readonly RedisConnectionProvider _redisProvider;
     private readonly IRedisCollection<UserDocument> _users;
-    private const string StreamName = "$ce-user"; // Category projection for all user streams
-    private const string GroupName = "user-group-sub2";
 
 
     public UserStreamSubscription(
@@ -34,8 +35,8 @@ public class UserStreamSubscription
     )
     {
         var settings = new PersistentSubscriptionSettings(
-            resolveLinkTos: true,
-            startFrom: Position.Start,
+            true,
+            Position.Start,
             maxRetryCount: 10,
             maxSubscriberCount: 3,
             checkPointAfter: TimeSpan.FromSeconds(5)
@@ -44,7 +45,7 @@ public class UserStreamSubscription
         try
         {
             var info = await _persistentSubscriptionsClient.GetInfoToAllAsync(
-                groupName: GroupName,
+                GroupName,
                 cancellationToken: cancellationToken
             );
         }
@@ -53,7 +54,7 @@ public class UserStreamSubscription
             try
             {
                 await _persistentSubscriptionsClient.CreateToAllAsync(
-                    groupName: GroupName,
+                    GroupName,
                     EventTypeFilter.ExcludeSystemEvents(),
                     settings,
                     cancellationToken: cancellationToken
@@ -71,7 +72,6 @@ public class UserStreamSubscription
                 cancellationToken: cancellationToken);
 
         await foreach (var message in subscription.Messages.WithCancellation(cancellationToken))
-        {
             switch (message)
             {
                 case PersistentSubscriptionMessage.NotFound notFound:
@@ -85,7 +85,6 @@ public class UserStreamSubscription
                     await subscription.Ack(resolvedEvent);
                     break;
             }
-        }
     }
 
     private async Task HandleEvent(
@@ -112,16 +111,10 @@ public class UserStreamSubscription
         {
             var eventData = DeserializeEvent<UserCreatedEvent>(eventRecord);
 
-            if (eventData is null)
-            {
-                return;
-            }
-            
-            if (eventData.UserId == Guid.Empty)
-            {
-                return;
-            }
-        
+            if (eventData is null) return;
+
+            if (eventData.UserId == Guid.Empty) return;
+
             var userDocument = new UserDocument
             {
                 Id = eventData.UserId.ToString(),
@@ -140,10 +133,12 @@ public class UserStreamSubscription
             throw;
         }
 
-       
+
     }
 
-    private static T? DeserializeEvent<T>(EventRecord eventRecord)
+    private static T? DeserializeEvent<T>(
+        EventRecord eventRecord
+    )
     {
         try
         {

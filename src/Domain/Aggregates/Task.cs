@@ -19,7 +19,11 @@ public class Task : AggregateRoot<TaskId>
 
     private Task() { }
 
-    public static Task Create(TaskId id, string title, string description)
+    public static Task Create(
+        TaskId id,
+        string title,
+        string description
+    )
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new TaskDomainException("Title cannot be empty");
@@ -37,8 +41,38 @@ public class Task : AggregateRoot<TaskId>
         task.AddEvent(new TaskCreatedEvent(id, title, description));
         return task;
     }
-    
-    protected override void Apply(IEvent @event)
+
+    public static Task Create(
+        TaskId id,
+        string title,
+        string description,
+        TaskStatus status,
+        TaskPriority priority,
+        UserId? assignedTo,
+        DateTime createdAt,
+        DateTime? lastModified,
+        int version
+    )
+    {
+        var task = new Task
+        {
+            Id = id,
+            Title = title,
+            Description = description,
+            Status = status,
+            Priority = priority,
+            AssignedTo = assignedTo,
+            CreatedAt = createdAt,
+            LastModified = lastModified,
+            Version = version
+        };
+
+        return task;
+    }
+
+    protected override void Apply(
+        IEvent @event
+    )
     {
         switch (@event)
         {
@@ -62,13 +96,17 @@ public class Task : AggregateRoot<TaskId>
         }
     }
 
-    public void AssignTo(UserId userId)
+    public void AssignTo(
+        UserId userId
+    )
     {
         LastModified = DateTime.UtcNow;
         AddEvent(new TaskAssignedEvent(Id, userId));
     }
 
-    public void UpdateStatus(TaskStatus newStatus)
+    public void UpdateStatus(
+        TaskStatus newStatus
+    )
     {
         if (Status == newStatus)
             return;
@@ -77,7 +115,9 @@ public class Task : AggregateRoot<TaskId>
         AddEvent(new TaskStatusUpdatedEvent(Id, newStatus));
     }
 
-    public void UpdatePriority(TaskPriority newPriority)
+    public void UpdatePriority(
+        TaskPriority newPriority
+    )
     {
         if (Priority == newPriority)
             return;

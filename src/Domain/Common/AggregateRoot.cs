@@ -5,7 +5,7 @@ public abstract class AggregateRoot<TId>
     private readonly List<IEvent> _events = new();
     
     public TId Id { get; protected set; }
-    public int Version { get; private set; }
+    public int Version { get; protected set; }
 
     public IReadOnlyCollection<IEvent> Events => _events.AsReadOnly();
 

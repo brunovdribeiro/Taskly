@@ -1,18 +1,20 @@
-using EventStore.Client;
-using Application.Common.Interfaces;
-using Domain.Events;
 using System.Text.Json;
 using Application.Common.Interfacoes;
-using Domain.ValueObjects;
 using Domain.Common;
+using Domain.ValueObjects;
+using EventStore.Client;
 
-namespace Infrastructure.EventStore;
+namespace Infrastructure.Persistences.EventStore;
 
 public class TaskEventStore(
     EventStoreClient client
 ) : ITaskEventStore
 {
-    public async Task AppendEventsAsync(TaskId taskId, IEnumerable<IEvent> events, CancellationToken cancellationToken)
+    public async Task AppendEventsAsync(
+        TaskId taskId,
+        IEnumerable<IEvent> events,
+        CancellationToken cancellationToken
+    )
     {
         var eventData = events.Select(e => new EventData(
             Uuid.NewUuid(),
@@ -28,7 +30,10 @@ public class TaskEventStore(
         );
     }
 
-    public async Task<IEnumerable<IEvent>> GetEventsAsync(TaskId taskId, CancellationToken cancellationToken)
+    public async Task<IEnumerable<IEvent>> GetEventsAsync(
+        TaskId taskId,
+        CancellationToken cancellationToken
+    )
     {
         var result = client.ReadStreamAsync(
             Direction.Forwards,
@@ -38,13 +43,11 @@ public class TaskEventStore(
         );
 
         var events = new List<IEvent>();
+
         await foreach (var @event in result)
         {
             var eventData = JsonSerializer.Deserialize<IEvent>(@event.Event.Data.Span);
-            if (eventData != null)
-            {
-                events.Add(eventData);
-            }
+            if (eventData != null) events.Add(eventData);
         }
 
         return events;
