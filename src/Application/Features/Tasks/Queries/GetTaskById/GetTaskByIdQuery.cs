@@ -3,4 +3,6 @@ using Application.Features.Tasks.Dtos;
 
 namespace Application.Features.Tasks.Queries.GetTaskById;
 
-public record GetTaskByIdQuery(Guid Id) : IQuery<TaskDto>;
+public record GetTaskByIdQuery(
+    Guid Id
+) : IQuery<TaskDto>;

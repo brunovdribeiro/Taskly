@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 public static class UserEndpoints
 {
-    public static RouteGroupBuilder MapUserEndpoints(this IEndpointRouteBuilder routes)
+    public static RouteGroupBuilder MapUserEndpoints(
+        this IEndpointRouteBuilder routes
+    )
     {
         var group = routes.MapGroup("/api/users");
 
@@ -24,7 +26,8 @@ public static class UserEndpoints
     private static async Task<Results<Ok<UserDto>, NotFound>> GetUserById(
         Guid id,
         IMediator mediator,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         var query = new GetUserByIdQuery(id);
         var user = await mediator.Send(query, cancellationToken);
@@ -39,7 +42,8 @@ public static class UserEndpoints
         CreateUserDto createUserDto,
         IMediator mediator,
         IUserRead userRead,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         var command = new CreateUserCommand
         {
@@ -51,14 +55,15 @@ public static class UserEndpoints
 
         return TypedResults.Created($"/api/users/{user}", user);
     }
-    
+
     private static async Task<Results<Ok<UserDto>, NotFound>> DeactivateUser(
         Guid id,
         IMediator mediator,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         var command = new DeactivateUserCommand { UserId = id };
-        
+
         try
         {
             var user = await mediator.Send(command, cancellationToken);

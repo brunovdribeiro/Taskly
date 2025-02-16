@@ -6,6 +6,13 @@ namespace Application.Features.Users.Interfaces;
 
 public interface IUserSnapshotRepository
 {
-    Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken);
-    Task SaveSnapshotAsync(User user, CancellationToken cancellationToken);
+    Task<User?> GetByIdAsync(
+        UserId id,
+        CancellationToken cancellationToken
+    );
+
+    Task SaveSnapshotAsync(
+        User user,
+        CancellationToken cancellationToken
+    );
 }

@@ -2,13 +2,24 @@ namespace Domain.ValueObjects;
 
 public record TaskId
 {
-    public Guid Value { get; }
-
-    private TaskId(Guid value)
+    private TaskId(
+        Guid value
+    )
     {
         Value = value;
     }
 
-    public static TaskId New() => new(Guid.NewGuid());
-    public static TaskId From(Guid value) => new(value);
+    public Guid Value { get; }
+
+    public static TaskId New()
+    {
+        return new TaskId(Guid.NewGuid());
+    }
+
+    public static TaskId From(
+        Guid value
+    )
+    {
+        return new TaskId(value);
+    }
 }

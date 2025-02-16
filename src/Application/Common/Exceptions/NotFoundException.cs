@@ -2,8 +2,7 @@ namespace Application.Common.Exceptions;
 
 public class NotFoundException : Exception
 {
-    public NotFoundException()
-        : base() { }
+    public NotFoundException() { }
 
     public NotFoundException(
         string message

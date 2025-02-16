@@ -6,5 +6,8 @@ namespace Application.Common.Interfaces;
 
 public interface ITaskRead
 {
-    Task<TaskDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<TaskDto?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken
+    );
 }

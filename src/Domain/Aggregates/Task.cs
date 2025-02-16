@@ -9,6 +9,7 @@ namespace Domain.Aggregates;
 
 public class Task : AggregateRoot<TaskId>
 {
+    private Task() { }
     public string Title { get; private set; }
     public string Description { get; private set; }
     public TaskStatus Status { get; private set; }
@@ -16,8 +17,6 @@ public class Task : AggregateRoot<TaskId>
     public UserId? AssignedTo { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? LastModified { get; private set; }
-
-    private Task() { }
 
     public static Task Create(
         TaskId id,

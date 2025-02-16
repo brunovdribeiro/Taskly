@@ -6,10 +6,13 @@ using Domain.ValueObjects;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Task = Domain.Aggregates.Task;
 
 public static class TaskEndpoints
 {
-    public static RouteGroupBuilder MapTaskEndpoints(this IEndpointRouteBuilder routes)
+    public static RouteGroupBuilder MapTaskEndpoints(
+        this IEndpointRouteBuilder routes
+    )
     {
         var group = routes.MapGroup("/api/tasks");
 
@@ -24,7 +27,8 @@ public static class TaskEndpoints
 
     private static async Task<Ok<IEnumerable<TaskDto>>> GetAllTasks(
         ITaskSnapshotRepository repository,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         // Implementation would go here
         return TypedResults.Ok(Enumerable.Empty<TaskDto>());
@@ -33,10 +37,11 @@ public static class TaskEndpoints
     private static async Task<Results<Ok<TaskDto>, NotFound>> GetTaskById(
         Guid id,
         ITaskSnapshotRepository repository,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         var task = await repository.GetLatestSnapshotAsync(TaskId.From(id), cancellationToken);
-        
+
         if (task is null)
             return TypedResults.NotFound();
 
@@ -48,7 +53,8 @@ public static class TaskEndpoints
         CreateTaskDto createTaskDto,
         [FromServices] IMediator mediator,
         ITaskSnapshotRepository repository,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         var command = new CreateTaskCommand
         {
@@ -68,7 +74,8 @@ public static class TaskEndpoints
         TaskDto taskDto,
         ITaskEventStore eventStore,
         ITaskSnapshotRepository repository,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         // Implementation would go here
         return TypedResults.Ok(taskDto);
@@ -78,13 +85,16 @@ public static class TaskEndpoints
         Guid id,
         ITaskEventStore eventStore,
         ITaskSnapshotRepository repository,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         // Implementation would go here
         return TypedResults.NoContent();
     }
 
-    private static TaskDto MapToDto(Domain.Aggregates.Task task)
+    private static TaskDto MapToDto(
+        Task task
+    )
     {
         return new TaskDto
         {

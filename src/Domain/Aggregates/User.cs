@@ -7,13 +7,12 @@ namespace Domain.Aggregates;
 
 public class User : AggregateRoot<UserId>
 {
+    private User() { }
     public string Email { get; private set; }
     public string Name { get; private set; }
     public bool IsActive { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? LastModified { get; private set; } = DateTime.UtcNow;
-
-    private User() { }
 
     public static User Create(
         UserId id,

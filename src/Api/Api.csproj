@@ -25,7 +25,7 @@
 
     <Target Name="GenerateSwaggerJson" BeforeTargets="GenerateTypeScriptModels">
         <!-- Run NSwag -->
-        <Exec Command="$(NSwagExe_Net90) run nswag.json" />
+        <Exec Command="$(NSwagExe_Net90) run nswag.json"/>
     </Target>
 
     <ItemGroup>
@@ -33,7 +33,7 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
-    
+
     <Target Name="GenerateTypeScriptModels" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
         <PropertyGroup>
             <SwaggerFile>$([System.IO.Path]::Combine($(ProjectDir), 'swagger.json'))</SwaggerFile>

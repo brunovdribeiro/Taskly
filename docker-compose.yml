@@ -25,7 +25,7 @@ services:
     volumes:
       - redis-data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -52,7 +52,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -74,7 +74,7 @@ services:
     volumes:
       - eventstore-data:/var/lib/eventstore
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:2113/health/live || exit 1"]
+      test: [ "CMD-SHELL", "curl -f http://localhost:2113/health/live || exit 1" ]
       interval: 5s
       timeout: 5s
       retries: 5

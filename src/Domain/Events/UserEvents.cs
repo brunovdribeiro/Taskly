@@ -6,15 +6,15 @@ namespace Domain.Events;
 
 public record UserCreatedEvent : IEvent
 {
-    public Guid UserId { get; }
-    public string Email { get; }
-    public string Name { get; }
-    public bool IsActive { get; }
-    public DateTime CreatedAt { get; }
-    public DateTime? LastModified { get; }
-    
     [JsonConstructor]
-    public UserCreatedEvent(Guid userId, string email, string name, bool isActive, DateTime createdAt, DateTime? lastModified)
+    public UserCreatedEvent(
+        Guid userId,
+        string email,
+        string name,
+        bool isActive,
+        DateTime createdAt,
+        DateTime? lastModified
+    )
     {
         UserId = userId;
         Email = email;
@@ -25,7 +25,14 @@ public record UserCreatedEvent : IEvent
     }
 
 
-    public UserCreatedEvent(UserId userId, string email, string name, bool isActive, DateTime createdAt, DateTime? lastModified)
+    public UserCreatedEvent(
+        UserId userId,
+        string email,
+        string name,
+        bool isActive,
+        DateTime createdAt,
+        DateTime? lastModified
+    )
     {
         UserId = userId.Value;
         Email = email;
@@ -34,6 +41,19 @@ public record UserCreatedEvent : IEvent
         CreatedAt = createdAt;
         LastModified = lastModified;
     }
+
+    public Guid UserId { get; }
+    public string Email { get; }
+    public string Name { get; }
+    public bool IsActive { get; }
+    public DateTime CreatedAt { get; }
+    public DateTime? LastModified { get; }
 }
-public record UserDeactivatedEvent(UserId UserId) : IEvent;
-public record UserActivatedEvent(UserId UserId) : IEvent;
+
+public record UserDeactivatedEvent(
+    UserId UserId
+) : IEvent;
+
+public record UserActivatedEvent(
+    UserId UserId
+) : IEvent;

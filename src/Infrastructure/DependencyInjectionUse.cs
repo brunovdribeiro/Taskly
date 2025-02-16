@@ -16,7 +16,7 @@ public static class DependencyInjectionUse
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
         await dbContext.Database.MigrateAsync();
-        
+
         return app;
     }
 }

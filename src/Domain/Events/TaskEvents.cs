@@ -8,16 +8,20 @@ namespace Domain.Events;
 public record TaskCreatedEvent(
     TaskId TaskId,
     string Title,
-    string Description) : IEvent;
+    string Description
+) : IEvent;
 
 public record TaskAssignedEvent(
     TaskId TaskId,
-    UserId AssignedTo) : IEvent;
+    UserId AssignedTo
+) : IEvent;
 
 public record TaskStatusUpdatedEvent(
     TaskId TaskId,
-    TaskStatus NewStatus) : IEvent;
+    TaskStatus NewStatus
+) : IEvent;
 
 public record TaskPriorityUpdatedEvent(
     TaskId TaskId,
-    TaskPriority NewPriority) : IEvent;
+    TaskPriority NewPriority
+) : IEvent;
