@@ -5,6 +5,7 @@ using EventStore.Client;
 using Infrastructure.EventStore;
 using Infrastructure.Postgres;
 using Infrastructure.Redis;
+using Infrastructure.Redis.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Redis.OM;
@@ -26,6 +27,7 @@ public static class DependencyInjection
     {
         var settings = EventStoreClientSettings.Create(configuration.GetConnectionString("EventStore")!);
         services.AddSingleton(new EventStoreClient(settings));
+        services.AddSingleton(new EventStorePersistentSubscriptionsClient(settings));
         services.AddScoped<ITaskEventStore, TaskEventStore>();
         services.AddScoped<IUserEventStore, UserEventStore>();
     }
@@ -34,8 +36,10 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("Postgres")!;
         services.AddScoped<ITaskSnapshotRepository>(_ => new TaskSnapshotRepository(connectionString));
-        services.AddScoped<IUserSnapshotRepository>(_ => 
-            new UserSnapshotRepository(connectionString));
+        services.AddScoped<IUserSnapshotRepository>(_ => new UserSnapshotRepository(connectionString));
+        
+        services.AddHostedService<UserStreamSubscriptionService>();
+
     }
 
     private static void AddRedis(this IServiceCollection services, IConfiguration configuration)

@@ -42,7 +42,7 @@ public class User : AggregateRoot<UserId>
         switch (@event)
         {
             case UserCreatedEvent e:
-                Id = e.UserId;
+                Id = UserId.From(e.UserId);
                 Email = e.Email;
                 Name = e.Name;
                 IsActive = true;

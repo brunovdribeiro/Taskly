@@ -19,10 +19,11 @@ public class UserEventStore : IUserEventStore
     {
         try
         {
+            
             var eventData = events.Select(e => new EventData(
                 Uuid.NewUuid(),
                 e.GetType().Name,
-                JsonSerializer.SerializeToUtf8Bytes(e)
+                JsonSerializer.SerializeToUtf8Bytes<object>(e, JsonSerializerOptions.Default)
             ));
 
             await _client.AppendToStreamAsync(

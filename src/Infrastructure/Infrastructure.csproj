@@ -8,6 +8,9 @@
 
     <ItemGroup>
       <PackageReference Include="Dapper" Version="2.1.66" />
+      <PackageReference Include="EventStore.Client.Grpc" Version="23.3.8" />
+      <PackageReference Include="EventStore.Client.Grpc.Operations" Version="23.3.8" />
+      <PackageReference Include="EventStore.Client.Grpc.PersistentSubscriptions" Version="23.3.8" />
       <PackageReference Include="EventStore.Client.Grpc.Streams" Version="23.3.8" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.2" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
@@ -17,6 +20,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Application\Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.Extensions.Hosting.Abstractions">
+        <HintPath>..\..\..\..\..\..\usr\local\share\dotnet\shared\Microsoft.AspNetCore.App\9.0.1\Microsoft.Extensions.Hosting.Abstractions.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

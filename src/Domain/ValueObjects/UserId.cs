@@ -3,6 +3,8 @@ namespace Domain.ValueObjects;
 public record UserId
 {
     public Guid Value { get; }
+    
+    protected UserId() { }
 
     private UserId(Guid value)
     {
