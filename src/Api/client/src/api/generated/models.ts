@@ -6,8 +6,8 @@
 
 /* tslint:disable */
 /* eslint-disable */
-
 // ReSharper disable InconsistentNaming
+
 
 
 export interface TaskDto {

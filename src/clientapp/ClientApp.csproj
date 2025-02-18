@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.1695036">
+    <PropertyGroup>
+        <StartupCommand>npm run dev</StartupCommand>
+        <JavaScriptTestRoot>src\</JavaScriptTestRoot>
+        <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
+        <ShouldRunBuildScript>false</ShouldRunBuildScript>
+        <BuildOutputFolder>$(MSBuildProjectDirectory)\.next</BuildOutputFolder>
+        <BuildCommandWorkingDirectory>/Users/brunoribeiro/Labs/Taskly/src/clientapp/app</BuildCommandWorkingDirectory>
+        
+    </PropertyGroup>
+</Project>
