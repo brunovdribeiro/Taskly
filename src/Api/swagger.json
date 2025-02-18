@@ -170,9 +170,9 @@
         }
       }
     },
-    "/api/tasks/api/users/{id}": {
+    "/api/users/{id}": {
       "get": {
-        "operationId": "GetApiTasksApiUsers",
+        "operationId": "GetApiUsers",
         "parameters": [
           {
             "name": "id",
@@ -202,9 +202,9 @@
         }
       }
     },
-    "/api/tasks/api/users": {
+    "/api/users": {
       "post": {
-        "operationId": "PostApiTasksApiUsers",
+        "operationId": "PostApiUsers",
         "requestBody": {
           "x-name": "createUserDto",
           "content": {
@@ -241,9 +241,9 @@
         }
       }
     },
-    "/api/tasks/api/users/{id}/deactivate": {
+    "/api/users/{id}/deactivate": {
       "put": {
-        "operationId": "PutApiTasksApiUsersDeactivate",
+        "operationId": "PutApiUsersDeactivate",
         "parameters": [
           {
             "name": "id",

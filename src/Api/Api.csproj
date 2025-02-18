@@ -37,13 +37,13 @@
     <Target Name="GenerateTypeScriptModels" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
         <PropertyGroup>
             <SwaggerFile>$([System.IO.Path]::Combine($(ProjectDir), 'swagger.json'))</SwaggerFile>
-            <ModelsDir>$([System.IO.Path]::Combine($(ProjectDir), 'client', 'src', 'api', 'generated'))</ModelsDir>
+            <ModelsDir>$([System.IO.Path]::Combine($(ProjectDir), '..', 'clientapp', 'app', 'api', 'generated'))</ModelsDir>
         </PropertyGroup>
         <MakeDir Directories="$(ModelsDir)"/>
         <Exec WorkingDirectory="$(ProjectDir)" Command="$(NSwagExe_Net90) openapi2tsclient /input:$(SwaggerFile) /output:$(ModelsDir)/models.ts /Template:Fetch /generateClientClasses:false /typeStyle:Interface /dateTimeType:Date /markOptionalProperties:true /nullValue:undefined /generateOptionalParameters:true"/>
     </Target>
 
-    <Target Name="BuildReactApp" BeforeTargets="Build">
+    <Target Name="BuildReactApp" BeforeTargets="Build"  Condition="'$(Configuration)' == 'Release'">
         <Exec WorkingDirectory="$(SpaRoot)" Command="npm install"/>
         <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build"/>
         <ItemGroup>

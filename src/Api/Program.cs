@@ -33,7 +33,9 @@ app.UseSwaggerUi();
 
 await app.UseInfrastructure();
 
-app.MapTaskEndpoints()
-    .MapUserEndpoints();
+app.UseCors("ReactApp");
+
+app.MapTaskEndpoints();
+app.MapUserEndpoints();
 
 app.Run();
