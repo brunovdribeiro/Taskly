@@ -27,7 +27,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  
+
   eventstore:
     image: eventstore/eventstore:22.10.1-buster-slim
     environment:
@@ -49,45 +49,20 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  
-  splunk:
-    image: splunk/splunk:latest
-    platform: linux/amd64
-    environment:
-      - SPLUNK_START_ARGS=--accept-license --no-prompt --enable-otel
-      - SPLUNK_PASSWORD=password
-      - SPLUNK_HEC_TOKEN=aba97acc-a475-4954-a711-bd16b04b6f78
-      - SPLUNK_HEC_ENABLE=true
-      - SPLUNK_ENABLE_LISTEN=9997
-      - OTEL_SERVICE_NAME=Taskly
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://0.0.0.0:4318
-      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
-      - SPLUNK_ENABLE_OTEL=true
-      - SPLUNK_HTTP_ENABLESSL=false
-      - SPLUNK_HEC_PORT=8088
-      - SPLUNK_S2S_PORT=9997
-      - SPLUNK_METRICS_ENABLE=true
-    ports:
-      - "8000:8000"   # Web UI
-      - "8088:8088"   # HEC
-      - "4318:4318"   # OTLP
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8000" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
-  grafana:
-    image: grafana/grafana-oss:latest
-    container_name: grafana
+  jaeger:
+    image: jaegertracing/all-in-one:latest
     ports:
-      - "3000:3000"
-    volumes:
-      - grafana_data:/var/lib/grafana
+      - "6831:6831/udp"   # Jaeger thrift compact protocol
+      - "6832:6832/udp"   # Jaeger thrift binary protocol
+      - "5778:5778"       # Jaeger agent configs
+      - "16686:16686"     # Jaeger UI
+      - "4317:4317"       # OTLP gRPC
+      - "4318:4318"       # OTLP HTTP
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - COLLECTOR_OTLP_ENABLED=true
     healthcheck:
-      test: [ "CMD-SHELL", "wget -q --spider http://localhost:3000/api/health || exit 1" ]
+      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:16686" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -97,6 +72,3 @@ volumes:
   redis-insight-data:
   postgres-data:
   eventstore-data:
-  splunk_data:
-  splunk_etc:
-  grafana_data:

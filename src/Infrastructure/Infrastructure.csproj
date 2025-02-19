@@ -24,7 +24,6 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.2"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2"/>
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0"/>
-        
         <PackageReference Include="Redis.OM" Version="0.7.6"/>
     </ItemGroup>
 
@@ -34,6 +33,16 @@
         <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.11.1" />
         <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.11.0" />
         <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.11.0" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.11.0" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.EventCounters" Version="1.5.1-alpha.1" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.11.0-beta.1" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.11.0" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.SqlClient" Version="1.11.0-beta.1" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.11.0-beta.1" />
+        <PackageReference Include="Npgsql.OpenTelemetry" Version="9.0.2" />
+
+
+
     </ItemGroup>
 
     <ItemGroup>

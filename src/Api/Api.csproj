@@ -22,14 +22,6 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Splunk.OpenTelemetry.AutoInstrumentation" Version="1.9.0" />
-    </ItemGroup>
-
-    <PropertyGroup>
-        <SkippedInstrumentations>StackExchange.Redis</SkippedInstrumentations>
-    </PropertyGroup>
     
     <Target Name="GenerateSwaggerJson" BeforeTargets="GenerateTypeScriptModels">
         <!-- Run NSwag -->

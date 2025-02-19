@@ -1,6 +1,9 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
@@ -18,20 +21,34 @@ public static class TelemetrySetup
             .WithTracing(builder =>
             {
                 builder
-                    .SetResourceBuilder(ResourceBuilder.CreateDefault()
-                        .AddService("Taskly")
-                        .AddTelemetrySdk())
+                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Taskly").AddTelemetrySdk())
                     .AddSource("Taskly")
-                    .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    // .AddEntityFrameworkCoreInstrumentation()
-                    // .AddRedisInstrumentation()
+                    .AddEntityFrameworkCoreInstrumentation()
+                    .AddAspNetCoreInstrumentation(options =>
+                    {
+                        options.Filter = ctx => ctx.Request.Method == "POST" || ctx.Request.Method == "PUT";
+
+                        options.EnrichWithHttpRequest = (
+                            activity,
+                            request
+                        ) =>
+                        {
+                            request.EnableBuffering();
+                            using var reader = new StreamReader(request.Body, leaveOpen: true);
+                            var body = reader.ReadToEndAsync().Result;
+                            request.Body.Position = 0;
+                            activity.SetTag("http.request.body", body);
+                        };
+                    })
+                    .AddRedisInstrumentation()
+                    .AddSqlClientInstrumentation()
+                    .AddNpgsql()
                     .AddConsoleExporter()
                     .AddOtlpExporter(opts =>
                     {
-                        opts.Endpoint = new Uri("http://localhost:4318/v1/traces");
-                        opts.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.HttpProtobuf;
-                        opts.Headers = $"Authorization=Splunk {configuration["Splunk:Token"]}";
+                        opts.Endpoint = new Uri("http://localhost:4317");
+                        opts.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
                     });
             });
 
