@@ -1,6 +1,8 @@
+using System.Diagnostics;
 using Application.Features.Users.Dtos;
 using Application.Features.Users.Interfaces;
 using Infrastructure.Persistences.Redis.Documents;
+using Infrastructure.Telemetry;
 using Redis.OM;
 using Redis.OM.Searching;
 
@@ -34,23 +36,37 @@ public class UserRead : IUserRead
 
     public async Task<UserDto?> GetByIdAsync(
         Guid id,
-        CancellationToken cancellationToken
-    )
+        CancellationToken cancellationToken)
     {
-        var user = await _users.FindByIdAsync(id.ToString());
+        using var activity = TelemetrySetup.ActivitySource.StartActivity("GetUserById");
+        activity?.SetTag("userId", id);
 
-        if (user == null)
-            return null;
-
-        return new UserDto
+        try
         {
-            Id = Guid.Parse(user.Id),
-            Email = user.Email,
-            Name = user.Name,
-            IsActive = user.IsActive,
-            CreatedAt = user.CreatedAt,
-            LastModified = user.LastModified
-        };
+            var user = await _users.FindByIdAsync(id.ToString());
+        
+            if (user == null)
+            {
+                activity?.SetTag("userFound", false);
+                return null;
+            }
+
+            activity?.SetTag("userFound", true);
+            return new UserDto
+            {
+                Id = Guid.Parse(user.Id),
+                Email = user.Email,
+                Name = user.Name,
+                IsActive = user.IsActive,
+                CreatedAt = user.CreatedAt,
+                LastModified = user.LastModified
+            };
+        }
+        catch (Exception e)
+        {
+            activity?.SetStatus(ActivityStatusCode.Error, e.Message);
+            throw;
+        }
     }
     
     public async Task<IEnumerable<UserDto>> GetAllAsync(

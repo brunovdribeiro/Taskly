@@ -8,6 +8,7 @@ using Infrastructure.Persistences.Posgres.Tasks;
 using Infrastructure.Persistences.Posgres.Users;
 using Infrastructure.Persistences.Redis;
 using Infrastructure.Persistences.Redis.Services;
+using Infrastructure.Telemetry;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,7 @@ public static class DependencyInjectionAdd
         services.AddEventStore(configuration);
         services.AddPostgres(configuration);
         services.AddRedis(configuration);
+        services.AddTelemetry(configuration);
 
         return services;
     }

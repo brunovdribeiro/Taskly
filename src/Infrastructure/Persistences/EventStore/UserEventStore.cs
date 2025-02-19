@@ -1,8 +1,10 @@
+using System.Diagnostics;
 using System.Text.Json;
 using Application.Features.Users.Interfaces;
 using Domain.Common;
 using Domain.ValueObjects;
 using EventStore.Client;
+using Infrastructure.Telemetry;
 
 namespace Infrastructure.Persistences.EventStore;
 
@@ -20,17 +22,22 @@ public class UserEventStore : IUserEventStore
     public async Task AppendEventsAsync(
         UserId userId,
         IEnumerable<IEvent> events,
-        CancellationToken cancellationToken
-    )
+        CancellationToken cancellationToken)
     {
+        using var activity = TelemetrySetup.ActivitySource.StartActivity("AppendEvents");
+        activity?.SetTag("userId", userId.Value);
+    
         try
         {
-
-            var eventData = events.Select(e => new EventData(
-                Uuid.NewUuid(),
-                e.GetType().Name,
-                JsonSerializer.SerializeToUtf8Bytes<object>(e, JsonSerializerOptions.Default)
-            ));
+            var eventData = events.Select(e => 
+            {
+                activity?.AddEvent(new ActivityEvent(e.GetType().Name));
+                return new EventData(
+                    Uuid.NewUuid(),
+                    e.GetType().Name,
+                    JsonSerializer.SerializeToUtf8Bytes<object>(e, JsonSerializerOptions.Default)
+                );
+            });
 
             await _client.AppendToStreamAsync(
                 $"user-{userId.Value}",
@@ -41,7 +48,7 @@ public class UserEventStore : IUserEventStore
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            activity?.SetStatus(ActivityStatusCode.Error, e.Message);
             throw;
         }
     }
