@@ -1,27 +1,28 @@
 services:
-  api:
-    build:
-      context: .
-      dockerfile: src/Api/Dockerfile
-    ports:
-      - "9000:8080"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__Redis=redis://redis:6379
-      - ConnectionStrings__Postgres=Host=postgres;Database=taskmanager;Username=postgres;Password=postgres
-      - ConnectionStrings__EventStore=esdb://eventstore:2113?tls=false
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      eventstore:
-        condition: service_healthy
+#  api:
+#    build:
+#      context: .
+#      dockerfile: src/Api/Dockerfile
+#    ports:
+#      - "9000:8080"
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#      - ConnectionStrings__Redis=redis://redis:6379
+#      - ConnectionStrings__Postgres=Host=postgres;Database=taskmanager;Username=postgres;Password=postgres
+#      - ConnectionStrings__EventStore=esdb://eventstore:2113?tls=false
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#      redis:
+#        condition: service_healthy
+#      eventstore:
+#        condition: service_healthy
 
   redis:
-    image: redislabs/rejson:latest
+    image: redis/redis-stack:latest
     ports:
       - "6379:6379"
+      - "8001:8001"
     volumes:
       - redis-data:/data
     healthcheck:

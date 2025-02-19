@@ -3,6 +3,7 @@ using Application.Features.Users.Commands.CreateUser;
 using Application.Features.Users.Commands.DeactivateUser;
 using Application.Features.Users.Dtos;
 using Application.Features.Users.Interfaces;
+using Application.Features.Users.Queries.GetAllUsers;
 using Application.Features.Users.Queries.GetUserByIdQuery;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -18,7 +19,7 @@ public static class UserEndpoints
         group.MapGet("/{id}", GetUserById);
         group.MapPost("/", CreateUser);
         group.MapPut("/{id}/deactivate", DeactivateUser); // Add this line
-
+        group.MapGet("/", GetAllUsers);
 
         return group;
     }
@@ -73,5 +74,15 @@ public static class UserEndpoints
         {
             return TypedResults.NotFound();
         }
+    }
+    
+    private static async Task<Ok<IEnumerable<UserDto>>> GetAllUsers(
+        IMediator mediator,
+        CancellationToken cancellationToken
+    )
+    {
+        var query = new GetAllUsersQuery();
+        var users = await mediator.Send(query, cancellationToken);
+        return TypedResults.Ok(users);
     }
 }

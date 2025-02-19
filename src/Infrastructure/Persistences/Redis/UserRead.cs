@@ -17,6 +17,19 @@ public class UserRead : IUserRead
     {
         _provider = provider;
         _users = _provider.RedisCollection<UserDocument>();
+        CreateIndex().Wait();
+    }
+    
+    private async Task CreateIndex()
+    {
+        try
+        {
+            await _provider.Connection.CreateIndexAsync(typeof(UserDocument));
+        }
+        catch (Exception)
+        {
+            // Index might already exist, ignore the error
+        }
     }
 
     public async Task<UserDto?> GetByIdAsync(
@@ -38,5 +51,22 @@ public class UserRead : IUserRead
             CreatedAt = user.CreatedAt,
             LastModified = user.LastModified
         };
+    }
+    
+    public async Task<IEnumerable<UserDto>> GetAllAsync(
+        CancellationToken cancellationToken
+    )
+    {
+        var users = await _users.ToListAsync();
+    
+        return users.Select(user => new UserDto
+        {
+            Id = Guid.Parse(user.Id),
+            Email = user.Email,
+            Name = user.Name,
+            IsActive = user.IsActive,
+            CreatedAt = user.CreatedAt,
+            LastModified = user.LastModified
+        });
     }
 }

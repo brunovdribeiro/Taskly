@@ -4,8 +4,6 @@ namespace Application.Features.Users.Interfaces;
 
 public interface IUserRead
 {
-    Task<UserDto?> GetByIdAsync(
-        Guid id,
-        CancellationToken cancellationToken
-    );
+    Task<UserDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<IEnumerable<UserDto>> GetAllAsync(CancellationToken cancellationToken);
 }
