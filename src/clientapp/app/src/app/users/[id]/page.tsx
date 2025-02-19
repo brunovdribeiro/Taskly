@@ -28,7 +28,7 @@ export default function UserDetailsPage({ params }: PageProps) {
         };
 
         fetchUser();
-    }, [params]);
+    }, []);
 
     if (error) return <div>{error}</div>;
     if (!user) return <div>Loading...</div>;
