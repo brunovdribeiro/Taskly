@@ -43,14 +43,14 @@
         <Exec WorkingDirectory="$(ProjectDir)" Command="$(NSwagExe_Net90) openapi2tsclient /input:$(SwaggerFile) /output:$(ModelsDir)/models.ts /Template:Fetch /generateClientClasses:false /typeStyle:Interface /dateTimeType:Date /markOptionalProperties:true /nullValue:undefined /generateOptionalParameters:true"/>
     </Target>
 
-    <Target Name="BuildReactApp" BeforeTargets="Build"  Condition="'$(Configuration)' == 'Release'">
-        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install"/>
-        <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build"/>
-        <ItemGroup>
-            <DistFiles Include="$(SpaRoot)build\**"/>
-            <Content Remove="$(SpaRoot)**"/>
-            <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**"/>
-        </ItemGroup>
-        <Copy SourceFiles="@(DistFiles)" DestinationFolder="wwwroot\%(RecursiveDir)"/>
-    </Target>
+<!--    <Target Name="BuildReactApp" BeforeTargets="Build"  Condition="'$(Configuration)' == 'Release'">-->
+<!--        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install"/>-->
+<!--        <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build"/>-->
+<!--        <ItemGroup>-->
+<!--            <DistFiles Include="$(SpaRoot)build\**"/>-->
+<!--            <Content Remove="$(SpaRoot)**"/>-->
+<!--            <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**"/>-->
+<!--        </ItemGroup>-->
+<!--        <Copy SourceFiles="@(DistFiles)" DestinationFolder="wwwroot\%(RecursiveDir)"/>-->
+<!--    </Target>-->
 </Project>

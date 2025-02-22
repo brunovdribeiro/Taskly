@@ -1,4 +1,31 @@
 services:
+  api:
+    image: api:latest
+    build:
+      context: .
+      dockerfile: src/Api/Dockerfile
+    ports:
+      - "2309:2309"  # Single port for both API and Next.js app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:2309
+      - ConnectionStrings__Redis=redis://redis:6379
+      - ConnectionStrings__Postgres=Host=postgres:5432;Database=taskmanager;Username=postgres;Password=postgres
+      - ConnectionStrings__EventStore=esdb://eventDb:2113?tls=false
+      - NEW_RELIC_REGION=eu
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      eventstore:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2309/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  
   redis:
     image: redis/redis-stack:latest
     ports:
@@ -30,6 +57,7 @@ services:
 
   eventstore:
     image: eventstore/eventstore:22.10.1-buster-slim
+    container_name: eventDb
     environment:
       - EVENTSTORE_CLUSTER_SIZE=1
       - EVENTSTORE_RUN_PROJECTIONS=All
@@ -49,23 +77,21 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-
-  jaeger:
-    image: jaegertracing/all-in-one:latest
-    ports:
-      - "6831:6831/udp"   # Jaeger thrift compact protocol
-      - "6832:6832/udp"   # Jaeger thrift binary protocol
-      - "5778:5778"       # Jaeger agent configs
-      - "16686:16686"     # Jaeger UI
-      - "4317:4317"       # OTLP gRPC
-      - "4318:4318"       # OTLP HTTP
-    environment:
-      - COLLECTOR_OTLP_ENABLED=true
-    healthcheck:
-      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:16686" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+  
+  agent:
+    container_name: newrelic-infra
+    build:
+      context: ./src/Infrastructure/Telemetry/newrelic-infra
+      dockerfile: newrelic-infra.dockerfile
+    cap_add:
+      - SYS_PTRACE
+    network_mode: bridge
+    pid: host
+    privileged: true
+    volumes:
+      - "/:/host:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: unless-stopped
 
 volumes:
   redis-data:

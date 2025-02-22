@@ -8,34 +8,30 @@ builder.Services.AddOpenApiDocument();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// Add CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("ReactApp", builder =>
-        builder.WithOrigins("http://localhost:3000")
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials());
-});
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-app.UseCors("ReactApp");
-
-// Serve static files
+// Configure the HTTP request pipeline
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-app.MapFallbackToFile("index.html");
+// Map API endpoints under /api
+app.MapGroup("/api")
+    .MapTaskEndpoints()
+    .MapUserEndpoints();
 
 app.UseOpenApi();
 app.UseSwaggerUi();
 
-await app.UseInfrastructure();
+if (!args.Contains("--no-db"))
+{
+    await app.UseInfrastructure();
+}
 
-app.UseCors("ReactApp");
+app.UseHealthChecks("/health");
 
-app.MapTaskEndpoints();
-app.MapUserEndpoints();
+// Serve Next.js app for non-API routes
+app.MapFallbackToFile("index.html");
 
 app.Run();

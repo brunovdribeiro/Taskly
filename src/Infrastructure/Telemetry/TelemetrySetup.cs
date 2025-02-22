@@ -11,7 +11,7 @@ namespace Infrastructure.Telemetry;
 
 public static class TelemetrySetup
 {
-    public static ActivitySource ActivitySource = new("Taskly");
+    public static ActivitySource ActivitySource = new("taskly");
 
     public static IServiceCollection AddTelemetry(
         this IServiceCollection services,
@@ -21,8 +21,7 @@ public static class TelemetrySetup
             .WithTracing(builder =>
             {
                 builder
-                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Taskly").AddTelemetrySdk())
-                    .AddSource("Taskly")
+                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("taskly").AddTelemetrySdk())
                     .AddHttpClientInstrumentation()
                     .AddEntityFrameworkCoreInstrumentation()
                     .AddAspNetCoreInstrumentation(options =>
@@ -44,12 +43,7 @@ public static class TelemetrySetup
                     .AddRedisInstrumentation()
                     .AddSqlClientInstrumentation()
                     .AddNpgsql()
-                    .AddConsoleExporter()
-                    .AddOtlpExporter(opts =>
-                    {
-                        opts.Endpoint = new Uri("http://localhost:4317");
-                        opts.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
-                    });
+                    .AddOtlpExporter();
             });
 
         return services;

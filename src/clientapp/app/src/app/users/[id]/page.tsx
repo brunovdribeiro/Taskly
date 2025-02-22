@@ -1,34 +1,34 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { UserDto } from '../../../../api/generated/models';
 
 interface PageProps {
-    params: { id: string };
+    id: string;
 }
 
-export default function UserDetailsPage({ params }: PageProps) {
+export default function UserDetailsPage({params}: {params: Promise<PageProps>}) {
     const [user, setUser] = useState<UserDto | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const { id } = use(params);
 
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const param = await params
-                const response = await fetch(`/api/users/${param.id}`);
+                const response = await fetch(`/api/users/${id}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch user');
                 }
                 const data = await response.json();
                 setUser(data);
-            } catch (error) {
+            } catch {
                 setError('Failed to load user');
             }
         };
 
         fetchUser();
-    }, []);
+    });
 
     if (error) return <div>{error}</div>;
     if (!user) return <div>Loading...</div>;
