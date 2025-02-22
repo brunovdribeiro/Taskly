@@ -23,25 +23,25 @@
         </PackageReference>
     </ItemGroup>
     
-    <Target Name="GenerateSwaggerJson" BeforeTargets="GenerateTypeScriptModels">
-        <!-- Run NSwag -->
-        <Exec Command="$(NSwagExe_Net90) run nswag.json"/>
-    </Target>
+<!--    <Target Name="GenerateSwaggerJson" BeforeTargets="GenerateTypeScriptModels">-->
+<!--        &lt;!&ndash; Run NSwag &ndash;&gt;-->
+<!--        <Exec Command="$(NSwagExe_Net90) run nswag.json"/>-->
+<!--    </Target>-->
 
-    <ItemGroup>
-        <None Update="nswag.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
+<!--    <ItemGroup>-->
+<!--        <None Update="nswag.json">-->
+<!--            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>-->
+<!--        </None>-->
+<!--    </ItemGroup>-->
 
-    <Target Name="GenerateTypeScriptModels" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
-        <PropertyGroup>
-            <SwaggerFile>$([System.IO.Path]::Combine($(ProjectDir), 'swagger.json'))</SwaggerFile>
-            <ModelsDir>$([System.IO.Path]::Combine($(ProjectDir), '..', 'clientapp', 'app', 'api', 'generated'))</ModelsDir>
-        </PropertyGroup>
-        <MakeDir Directories="$(ModelsDir)"/>
-        <Exec WorkingDirectory="$(ProjectDir)" Command="$(NSwagExe_Net90) openapi2tsclient /input:$(SwaggerFile) /output:$(ModelsDir)/models.ts /Template:Fetch /generateClientClasses:false /typeStyle:Interface /dateTimeType:Date /markOptionalProperties:true /nullValue:undefined /generateOptionalParameters:true"/>
-    </Target>
+<!--    <Target Name="GenerateTypeScriptModels" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">-->
+<!--        <PropertyGroup>-->
+<!--            <SwaggerFile>$([System.IO.Path]::Combine($(ProjectDir), 'swagger.json'))</SwaggerFile>-->
+<!--            <ModelsDir>$([System.IO.Path]::Combine($(ProjectDir), '..', 'clientapp', 'app', 'api', 'generated'))</ModelsDir>-->
+<!--        </PropertyGroup>-->
+<!--        <MakeDir Directories="$(ModelsDir)"/>-->
+<!--        <Exec WorkingDirectory="$(ProjectDir)" Command="$(NSwagExe_Net90) openapi2tsclient /input:$(SwaggerFile) /output:$(ModelsDir)/models.ts /Template:Fetch /generateClientClasses:false /typeStyle:Interface /dateTimeType:Date /markOptionalProperties:true /nullValue:undefined /generateOptionalParameters:true"/>-->
+<!--    </Target>-->
 
 <!--    <Target Name="BuildReactApp" BeforeTargets="Build"  Condition="'$(Configuration)' == 'Release'">-->
 <!--        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install"/>-->

@@ -17,8 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution FIles", "Solution 
 		readme.md = readme.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientApp", "src\clientapp\ClientApp.csproj", "{4E052CB8-9AAD-451B-841D-C5445133C2E6}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,9 +43,5 @@ Global
 		{5EED0D2E-3E84-4FB2-882B-6BA46D003828}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EED0D2E-3E84-4FB2-882B-6BA46D003828}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EED0D2E-3E84-4FB2-882B-6BA46D003828}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E052CB8-9AAD-451B-841D-C5445133C2E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E052CB8-9AAD-451B-841D-C5445133C2E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E052CB8-9AAD-451B-841D-C5445133C2E6}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E052CB8-9AAD-451B-841D-C5445133C2E6}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal
