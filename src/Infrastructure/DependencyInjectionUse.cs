@@ -1,4 +1,4 @@
-using Infrastructure.Persistences.Posgres;
+using Infrastructure.Persistence.Postgres;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

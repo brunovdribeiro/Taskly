@@ -1,6 +1,6 @@
 using Redis.OM.Modeling;
 
-namespace Infrastructure.Persistences.Redis.Documents;
+namespace Infrastructure.Persistence.Redis.Documents;
 
 [Document(StorageType = StorageType.Json, Prefixes = new[] { "Task" })]
 public class TaskDocument

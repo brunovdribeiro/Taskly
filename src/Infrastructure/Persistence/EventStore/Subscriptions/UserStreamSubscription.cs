@@ -2,11 +2,11 @@ using System.Text;
 using System.Text.Json;
 using Domain.Events;
 using EventStore.Client;
-using Infrastructure.Persistences.Redis.Documents;
+using Infrastructure.Persistence.Redis.Documents;
 using Redis.OM;
 using Redis.OM.Searching;
 
-namespace Infrastructure.Persistences.EventStore.Subscriptions;
+namespace Infrastructure.Persistence.EventStore.Subscriptions;
 
 public class UserStreamSubscription
 {

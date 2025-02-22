@@ -3,7 +3,7 @@ using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Task = Domain.Aggregates.Task;
 
-namespace Infrastructure.Persistences.Posgres.Tasks;
+namespace Infrastructure.Persistence.Postgres.Tasks;
 
 public class TaskSnapshotRepository(
     ApplicationDbContext context

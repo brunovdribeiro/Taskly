@@ -4,7 +4,7 @@ using Domain.Common;
 using Domain.ValueObjects;
 using EventStore.Client;
 
-namespace Infrastructure.Persistences.EventStore;
+namespace Infrastructure.Persistence.EventStore;
 
 public class TaskEventStore(
     EventStoreClient client

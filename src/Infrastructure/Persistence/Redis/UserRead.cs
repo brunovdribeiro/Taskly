@@ -1,12 +1,10 @@
-using System.Diagnostics;
 using Application.Features.Users.Dtos;
 using Application.Features.Users.Interfaces;
-using Infrastructure.Persistences.Redis.Documents;
-using Infrastructure.Telemetry;
+using Infrastructure.Persistence.Redis.Documents;
 using Redis.OM;
 using Redis.OM.Searching;
 
-namespace Infrastructure.Persistences.Redis;
+namespace Infrastructure.Persistence.Redis;
 
 public class UserRead : IUserRead
 {
@@ -21,7 +19,7 @@ public class UserRead : IUserRead
         _users = _provider.RedisCollection<UserDocument>();
         CreateIndex().Wait();
     }
-    
+
     private async Task CreateIndex()
     {
         try
@@ -36,45 +34,33 @@ public class UserRead : IUserRead
 
     public async Task<UserDto?> GetByIdAsync(
         Guid id,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
-        using var activity = TelemetrySetup.ActivitySource.StartActivity("GetUserById");
-        activity?.SetTag("userId", id);
+        var user = await _users.FindByIdAsync(id.ToString());
 
-        try
+        if (user == null)
         {
-            var user = await _users.FindByIdAsync(id.ToString());
-        
-            if (user == null)
-            {
-                activity?.SetTag("userFound", false);
-                return null;
-            }
+            return null;
+        }
 
-            activity?.SetTag("userFound", true);
-            return new UserDto
-            {
-                Id = Guid.Parse(user.Id),
-                Email = user.Email,
-                Name = user.Name,
-                IsActive = user.IsActive,
-                CreatedAt = user.CreatedAt,
-                LastModified = user.LastModified
-            };
-        }
-        catch (Exception e)
+        return new UserDto
         {
-            activity?.SetStatus(ActivityStatusCode.Error, e.Message);
-            throw;
-        }
+            Id = Guid.Parse(user.Id),
+            Email = user.Email,
+            Name = user.Name,
+            IsActive = user.IsActive,
+            CreatedAt = user.CreatedAt,
+            LastModified = user.LastModified
+        };
     }
-    
+
     public async Task<IEnumerable<UserDto>> GetAllAsync(
         CancellationToken cancellationToken
     )
     {
         var users = await _users.ToListAsync();
-    
+
         return users.Select(user => new UserDto
         {
             Id = Guid.Parse(user.Id),

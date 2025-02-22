@@ -2,13 +2,12 @@ using Application.Common.Interfaces;
 using Application.Common.Interfacoes;
 using Application.Features.Users.Interfaces;
 using EventStore.Client;
-using Infrastructure.Persistences.EventStore;
-using Infrastructure.Persistences.Posgres;
-using Infrastructure.Persistences.Posgres.Tasks;
-using Infrastructure.Persistences.Posgres.Users;
-using Infrastructure.Persistences.Redis;
-using Infrastructure.Persistences.Redis.Services;
-using Infrastructure.Telemetry;
+using Infrastructure.Persistence.EventStore;
+using Infrastructure.Persistence.Postgres;
+using Infrastructure.Persistence.Postgres.Tasks;
+using Infrastructure.Persistence.Postgres.Users;
+using Infrastructure.Persistence.Redis;
+using Infrastructure.Persistence.Redis.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,8 +25,7 @@ public static class DependencyInjectionAdd
         services.AddEventStore(configuration);
         services.AddPostgres(configuration);
         services.AddRedis(configuration);
-        services.AddTelemetry(configuration);
-
+    
         return services;
     }
 

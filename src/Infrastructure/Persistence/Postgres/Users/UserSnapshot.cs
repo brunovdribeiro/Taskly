@@ -1,4 +1,4 @@
-namespace Infrastructure.Persistences.Posgres.Users;
+namespace Infrastructure.Persistence.Postgres.Users;
 
 public class UserSnapshot
 {

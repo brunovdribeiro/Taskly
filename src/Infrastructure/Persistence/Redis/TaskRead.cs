@@ -1,12 +1,12 @@
 using Application.Common.Interfaces;
 using Application.Features.Tasks.Dtos;
 using Domain.Enums;
-using Infrastructure.Persistences.Redis.Documents;
+using Infrastructure.Persistence.Redis.Documents;
 using Redis.OM;
 using Redis.OM.Searching;
 using TaskStatus = Domain.Enums.TaskStatus;
 
-namespace Infrastructure.Persistences.Redis;
+namespace Infrastructure.Persistence.Redis;
 
 public class TaskRead : ITaskRead
 {

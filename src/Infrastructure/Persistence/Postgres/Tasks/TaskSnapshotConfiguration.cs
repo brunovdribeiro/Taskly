@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistences.Posgres.Tasks;
+namespace Infrastructure.Persistence.Postgres.Tasks;
 
 public class TaskSnapshotConfiguration : IEntityTypeConfiguration<TaskSnapshot>
 {

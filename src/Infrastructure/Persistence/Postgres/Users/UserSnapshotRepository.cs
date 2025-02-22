@@ -4,7 +4,7 @@ using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Task = System.Threading.Tasks.Task;
 
-namespace Infrastructure.Persistences.Posgres.Users;
+namespace Infrastructure.Persistence.Postgres.Users;
 
 public class UserSnapshotRepository : IUserSnapshotRepository
 {

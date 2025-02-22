@@ -1,9 +1,9 @@
 using EventStore.Client;
-using Infrastructure.Persistences.EventStore.Subscriptions;
+using Infrastructure.Persistence.EventStore.Subscriptions;
 using Microsoft.Extensions.Hosting;
 using Redis.OM;
 
-namespace Infrastructure.Persistences.Redis.Services;
+namespace Infrastructure.Persistence.Redis.Services;
 
 public class UserStreamSubscriptionService : BackgroundService
 {

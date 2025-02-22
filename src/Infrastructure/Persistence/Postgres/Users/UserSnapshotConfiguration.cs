@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistences.Posgres.Users;
+namespace Infrastructure.Persistence.Postgres.Users;
 
 public class UserSnapshotConfiguration : IEntityTypeConfiguration<UserSnapshot>
 {

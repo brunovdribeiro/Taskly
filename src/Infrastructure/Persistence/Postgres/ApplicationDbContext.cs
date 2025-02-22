@@ -1,8 +1,8 @@
-using Infrastructure.Persistences.Posgres.Tasks;
-using Infrastructure.Persistences.Posgres.Users;
+using Infrastructure.Persistence.Postgres.Tasks;
+using Infrastructure.Persistence.Postgres.Users;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Persistences.Posgres;
+namespace Infrastructure.Persistence.Postgres;
 
 public class ApplicationDbContext(
     DbContextOptions<ApplicationDbContext> options

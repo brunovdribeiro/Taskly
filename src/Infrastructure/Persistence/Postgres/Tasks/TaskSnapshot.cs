@@ -1,7 +1,7 @@
 using Domain.Enums;
 using TaskStatus = Domain.Enums.TaskStatus;
 
-namespace Infrastructure.Persistences.Posgres.Tasks;
+namespace Infrastructure.Persistence.Postgres.Tasks;
 
 public class TaskSnapshot
 {
