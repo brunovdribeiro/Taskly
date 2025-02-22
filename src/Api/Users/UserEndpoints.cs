@@ -10,18 +10,18 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 public static class UserEndpoints
 {
-    public static RouteGroupBuilder MapUserEndpoints(
+    public static IEndpointRouteBuilder MapUserEndpoints(
         this IEndpointRouteBuilder routes
     )
     {
-        var group = routes.MapGroup("/api/users");
+        var group = routes.MapGroup("/users");
 
         group.MapGet("/{id}", GetUserById);
         group.MapPost("/", CreateUser);
         group.MapPut("/{id}/deactivate", DeactivateUser); // Add this line
         group.MapGet("/", GetAllUsers);
 
-        return group;
+        return routes;
     }
 
     private static async Task<Results<Ok<UserDto>, NotFound>> GetUserById(

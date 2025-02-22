@@ -3,10 +3,22 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <SpaRoot>../clientapp/app/</SpaRoot>
-        <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <SpaRoot>..\Frontend\</SpaRoot>
+        <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
+        <SpaProxyServerUrl>https://localhost:5173</SpaProxyServerUrl>
     </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
+            <Version>9.*-*</Version>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Frontend\Frontend.esproj">
+            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+        </ProjectReference>
+    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Application\Application.csproj"/>
@@ -22,35 +34,35 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
+
+    <ItemGroup>
+        <None Update="nswag.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
     
-<!--    <Target Name="GenerateSwaggerJson" BeforeTargets="GenerateTypeScriptModels">-->
-<!--        &lt;!&ndash; Run NSwag &ndash;&gt;-->
-<!--        <Exec Command="$(NSwagExe_Net90) run nswag.json"/>-->
-<!--    </Target>-->
+    <Target Name="GenerateSwaggerJson" BeforeTargets="GenerateTypeScriptModels">
+        <!-- Run NSwag -->
+        <Exec Command="$(NSwagExe_Net90) run nswag.json"/>
+    </Target>
+    
+    <Target Name="GenerateTypeScriptModels" BeforeTargets="Build">
+        <PropertyGroup>
+            <SwaggerFile>$([System.IO.Path]::Combine($(ProjectDir), 'swagger.json'))</SwaggerFile>
+            <ModelsDir>$([System.IO.Path]::Combine($(ProjectDir), '..', 'Frontend', 'src', 'api', 'generated'))</ModelsDir>
+        </PropertyGroup>
+        <MakeDir Directories="$(ModelsDir)"/>
+        <Exec WorkingDirectory="$(ProjectDir)" Command="$(NSwagExe_Net90) openapi2tsclient /input:$(SwaggerFile) /output:$(ModelsDir)/models.ts /Template:Fetch /generateClientClasses:false /typeStyle:Interface /dateTimeType:Date /markOptionalProperties:true /nullValue:undefined /generateOptionalParameters:true"/>
+    </Target>
 
-<!--    <ItemGroup>-->
-<!--        <None Update="nswag.json">-->
-<!--            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>-->
-<!--        </None>-->
-<!--    </ItemGroup>-->
-
-<!--    <Target Name="GenerateTypeScriptModels" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">-->
-<!--        <PropertyGroup>-->
-<!--            <SwaggerFile>$([System.IO.Path]::Combine($(ProjectDir), 'swagger.json'))</SwaggerFile>-->
-<!--            <ModelsDir>$([System.IO.Path]::Combine($(ProjectDir), '..', 'clientapp', 'app', 'api', 'generated'))</ModelsDir>-->
-<!--        </PropertyGroup>-->
-<!--        <MakeDir Directories="$(ModelsDir)"/>-->
-<!--        <Exec WorkingDirectory="$(ProjectDir)" Command="$(NSwagExe_Net90) openapi2tsclient /input:$(SwaggerFile) /output:$(ModelsDir)/models.ts /Template:Fetch /generateClientClasses:false /typeStyle:Interface /dateTimeType:Date /markOptionalProperties:true /nullValue:undefined /generateOptionalParameters:true"/>-->
-<!--    </Target>-->
-
-<!--    <Target Name="BuildReactApp" BeforeTargets="Build"  Condition="'$(Configuration)' == 'Release'">-->
-<!--        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install"/>-->
-<!--        <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build"/>-->
-<!--        <ItemGroup>-->
-<!--            <DistFiles Include="$(SpaRoot)build\**"/>-->
-<!--            <Content Remove="$(SpaRoot)**"/>-->
-<!--            <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**"/>-->
-<!--        </ItemGroup>-->
-<!--        <Copy SourceFiles="@(DistFiles)" DestinationFolder="wwwroot\%(RecursiveDir)"/>-->
-<!--    </Target>-->
+    <Target Name="BuildReactApp" BeforeTargets="Build">
+        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install"/>
+        <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build"/>
+        <ItemGroup>
+            <DistFiles Include="$(SpaRoot)dist\**"/>
+            <Content Remove="$(SpaRoot)**"/>
+            <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**"/>
+        </ItemGroup>
+        <Copy SourceFiles="@(DistFiles)" DestinationFolder="wwwroot\%(RecursiveDir)"/>
+    </Target>
 </Project>

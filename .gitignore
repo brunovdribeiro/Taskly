@@ -4,3 +4,5 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 /src/Api/wwwroot/
+/src/Frontend/dist/
+/src/Frontend/node_modules/

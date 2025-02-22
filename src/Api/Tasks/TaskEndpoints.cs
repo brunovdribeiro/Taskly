@@ -10,11 +10,11 @@ using Task = Domain.Aggregates.Task;
 
 public static class TaskEndpoints
 {
-    public static RouteGroupBuilder MapTaskEndpoints(
+    public static IEndpointRouteBuilder MapTaskEndpoints(
         this IEndpointRouteBuilder routes
     )
     {
-        var group = routes.MapGroup("/api/tasks");
+        var group = routes.MapGroup("/tasks");
 
         group.MapGet("/", GetAllTasks);
         group.MapGet("/{id}", GetTaskById);
@@ -22,7 +22,7 @@ public static class TaskEndpoints
         group.MapPut("/{id}", UpdateTask);
         group.MapDelete("/{id}", DeleteTask);
 
-        return group;
+        return routes;
     }
 
     private static async Task<Ok<IEnumerable<TaskDto>>> GetAllTasks(

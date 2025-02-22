@@ -4,7 +4,7 @@
     "aspNetCoreToOpenApi": {
       "project": "Api.csproj",
       "msBuildProjectExtensionsPath": null,
-      "configuration": "Release",
+      "configuration": null,
       "runtime": null,
       "targetFramework": null,
       "noBuild": true,
