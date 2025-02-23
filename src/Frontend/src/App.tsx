@@ -5,9 +5,12 @@ import Users from "./features/users/Users.tsx";
 function App() {
     
     return (
-    <div>
-    <Users />
-    </div>)
+        <div>
+            <h1 className="text-3xl font-bold underline">
+                Hello world!
+            </h1>
+            <Users/>
+        </div>)
 }
 
 export default App;

@@ -1,36 +1,36 @@
 services:
-  api:
-    image: api:latest
-    build:
-      context: .
-      dockerfile: src/Api/Dockerfile
-    ports:
-      - "2309:2309"  # Single port for both API and Next.js app
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:2309
-      - ConnectionStrings__Redis=redis://redis:6379
-      - ConnectionStrings__Postgres=Host=postgres:5432;Database=taskmanager;Username=postgres;Password=postgres
-      - ConnectionStrings__EventStore=esdb://eventDb:2113?tls=false
-      - NEW_RELIC_REGION=eu
-    depends_on:
-      redis:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-      eventstore:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:2309/health"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+#  api:
+#    image: api:latest
+#    build:
+#      context: .
+#      dockerfile: src/Api/Dockerfile
+#    ports:
+#      - "2309:2309"  # Single port for both API and Next.js app
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#      - ASPNETCORE_URLS=http://+:2309
+#      - ConnectionStrings__Redis=redis://redis:6379
+#      - ConnectionStrings__Postgres=Host=postgres:5432;Database=taskmanager;Username=postgres;Password=postgres
+#      - ConnectionStrings__EventStore=esdb://eventDb:2113?tls=false
+#      - NEW_RELIC_REGION=eu
+#    depends_on:
+#      redis:
+#        condition: service_healthy
+#      postgres:
+#        condition: service_healthy
+#      eventstore:
+#        condition: service_healthy
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:2309/health"]
+#      interval: 5s
+#      timeout: 5s
+#      retries: 5
   
   redis:
     image: redis/redis-stack:latest
     ports:
       - "6379:6379"
-      - "8001:8001"
+      - "16379:8001"
     volumes:
       - redis-data:/data
     healthcheck:
