@@ -77,21 +77,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  
-  agent:
-    container_name: newrelic-infra
-    build:
-      context: ./src/Infrastructure/Telemetry/newrelic-infra
-      dockerfile: newrelic-infra.dockerfile
-    cap_add:
-      - SYS_PTRACE
-    network_mode: bridge
-    pid: host
-    privileged: true
-    volumes:
-      - "/:/host:ro"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    restart: unless-stopped
 
 volumes:
   redis-data:
