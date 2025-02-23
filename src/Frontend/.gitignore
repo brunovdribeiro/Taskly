@@ -1,3 +1,5 @@
-/dist
-/node_modules
-/obj
+dist
+node_modules/*
+obj/*
+tsconfig.app.tsbuildinfo
+tsconfig.spec.tsbuildinfo
