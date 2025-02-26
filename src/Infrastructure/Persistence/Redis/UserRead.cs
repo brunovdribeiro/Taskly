@@ -1,12 +1,13 @@
 using Application.Features.Users.Dtos;
 using Application.Features.Users.Interfaces;
 using Infrastructure.Persistence.Redis.Documents;
+using Infrastructure.Persistence.Redis.Interfaces;
 using Redis.OM;
 using Redis.OM.Searching;
 
 namespace Infrastructure.Persistence.Redis;
 
-public class UserRead : IUserRead
+public class UserRead : IUserRead, IUserDocumentRepository
 {
     private readonly RedisConnectionProvider _provider;
     private readonly IRedisCollection<UserDocument> _users;
@@ -32,14 +33,21 @@ public class UserRead : IUserRead
         }
     }
 
+    private async Task<UserDocument?> ByIdAsync(Guid id)
+    {
+        var user = await _users.FindByIdAsync(id.ToString());
+
+        return user;
+    }
+
     public async Task<UserDto?> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken
     )
     {
-        var user = await _users.FindByIdAsync(id.ToString());
+        var user = await ByIdAsync(id);
 
-        if (user == null)
+        if (user is null)
         {
             return null;
         }
@@ -55,11 +63,24 @@ public class UserRead : IUserRead
         };
     }
 
+    async Task<UserDocument?> IUserDocumentRepository.GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var user = await ByIdAsync(id);
+
+        return user;
+    }
+
+    private async Task<IEnumerable<UserDocument>> UserDocuments()
+    {
+        var users = await _users.ToListAsync();
+        return users;
+    }
+
     public async Task<IEnumerable<UserDto>> GetAllAsync(
         CancellationToken cancellationToken
     )
     {
-        var users = await _users.ToListAsync();
+        var users = await UserDocuments();
 
         return users.Select(user => new UserDto
         {
@@ -70,5 +91,21 @@ public class UserRead : IUserRead
             CreatedAt = user.CreatedAt,
             LastModified = user.LastModified
         });
+    }
+
+    Task<IEnumerable<UserDocument>> IUserDocumentRepository.GetAllAsync(CancellationToken cancellationToken)
+    {
+        return UserDocuments();
+    }
+
+
+    public async Task AddAsync(UserDocument document, CancellationToken cancellationToken)
+    {
+        await _users.InsertAsync(document, WhenKey.Always);
+    }
+
+    public async Task UpdateAsync(UserDocument document, CancellationToken cancellationToken)
+    {
+        await _users.UpdateAsync(document);
     }
 }

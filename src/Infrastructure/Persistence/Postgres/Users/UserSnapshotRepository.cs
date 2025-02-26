@@ -30,13 +30,14 @@ public class UserSnapshotRepository : IUserSnapshotRepository
         if (snapshot == null)
             return null;
 
-        return User.Create(
+        return User.Reconstitute(
             UserId.From(snapshot.Id),
             snapshot.Email,
             snapshot.Name,
             snapshot.IsActive,
             snapshot.CreatedAt,
-            snapshot.LastModified
+            snapshot.LastModified,
+            snapshot.Version
         );
     }
 

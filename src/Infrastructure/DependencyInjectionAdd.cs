@@ -7,6 +7,7 @@ using Infrastructure.Persistence.Postgres;
 using Infrastructure.Persistence.Postgres.Tasks;
 using Infrastructure.Persistence.Postgres.Users;
 using Infrastructure.Persistence.Redis;
+using Infrastructure.Persistence.Redis.Interfaces;
 using Infrastructure.Persistence.Redis.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +26,7 @@ public static class DependencyInjectionAdd
         services.AddEventStore(configuration);
         services.AddPostgres(configuration);
         services.AddRedis(configuration);
-    
+
         return services;
     }
 
@@ -52,7 +53,6 @@ public static class DependencyInjectionAdd
         services.AddScoped<IUserSnapshotRepository, UserSnapshotRepository>();
 
         services.AddHostedService<UserStreamSubscriptionService>();
-
     }
 
     private static void AddRedis(
@@ -64,5 +64,6 @@ public static class DependencyInjectionAdd
         services.AddSingleton(redisConnection);
         services.AddScoped<ITaskRead, TaskRead>();
         services.AddScoped<IUserRead, UserRead>();
+        services.AddSingleton<IUserDocumentRepository, UserRead>();
     }
 }

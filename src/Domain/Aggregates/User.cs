@@ -1,10 +1,12 @@
+using System.Runtime.CompilerServices;
 using Domain.Common;
 using Domain.Events;
 using Domain.Exceptions;
 using Domain.ValueObjects;
 
-namespace Domain.Aggregates;
+[assembly: InternalsVisibleTo("Infrastructure")]
 
+namespace Domain.Aggregates;
 public class User : AggregateRoot<UserId>
 {
     private User() { }
@@ -14,6 +16,29 @@ public class User : AggregateRoot<UserId>
     public DateTime CreatedAt { get; private set; }
     public DateTime? LastModified { get; private set; } = DateTime.UtcNow;
 
+    internal static User Reconstitute(
+        UserId id,
+        string email,
+        string name,
+        bool isActive,
+        DateTime createdAt,
+        DateTime? lastModified,
+        int version
+    )
+    {
+        var user = new User
+        {
+            Id = id,
+            Email = email,
+            Name = name,
+            IsActive = isActive,
+            CreatedAt = createdAt,
+            LastModified = lastModified,
+            Version = version
+        };
+        return user;
+    }
+    
     public static User Create(
         UserId id,
         string email,
@@ -90,7 +115,7 @@ public class User : AggregateRoot<UserId>
             return;
 
         LastModified = DateTime.UtcNow;
-        AddEvent(new UserDeactivatedEvent(Id));
+        AddEvent(new UserDeactivatedEvent(Id.Value));
     }
 
     public void Activate()
@@ -99,6 +124,6 @@ public class User : AggregateRoot<UserId>
             return;
 
         LastModified = DateTime.UtcNow;
-        AddEvent(new UserActivatedEvent(Id));
+        AddEvent(new UserActivatedEvent(Id.Value));
     }
 }

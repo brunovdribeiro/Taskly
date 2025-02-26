@@ -51,9 +51,9 @@ public record UserCreatedEvent : IEvent
 }
 
 public record UserDeactivatedEvent(
-    UserId UserId
+    Guid UserId
 ) : IEvent;
 
 public record UserActivatedEvent(
-    UserId UserId
+    Guid UserId
 ) : IEvent;

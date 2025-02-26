@@ -11,7 +11,7 @@ public class UserDocument
 
     [Indexed] public string Name { get; init; }
 
-    [Indexed] public bool IsActive { get; init; }
+    [Indexed] public bool IsActive { get; set; }
 
     [Indexed(CascadeDepth = 1)] public DateTime CreatedAt { get; init; }
 

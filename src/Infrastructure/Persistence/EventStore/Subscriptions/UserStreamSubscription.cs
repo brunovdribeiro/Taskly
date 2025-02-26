@@ -3,8 +3,8 @@ using System.Text.Json;
 using Domain.Events;
 using EventStore.Client;
 using Infrastructure.Persistence.Redis.Documents;
+using Infrastructure.Persistence.Redis.Interfaces;
 using Redis.OM;
-using Redis.OM.Searching;
 
 namespace Infrastructure.Persistence.EventStore.Subscriptions;
 
@@ -14,20 +14,18 @@ public class UserStreamSubscription
     private const string GroupName = "user-group-sub2";
     private readonly EventStoreClient _eventStoreClient;
     private readonly EventStorePersistentSubscriptionsClient _persistentSubscriptionsClient;
-    private readonly RedisConnectionProvider _redisProvider;
-    private readonly IRedisCollection<UserDocument> _users;
+    private readonly IUserDocumentRepository _users;
 
 
     public UserStreamSubscription(
         EventStoreClient eventStoreClient,
         EventStorePersistentSubscriptionsClient persistentSubscriptionsClient,
-        RedisConnectionProvider redisProvider
+        IUserDocumentRepository users
     )
     {
         _eventStoreClient = eventStoreClient;
         _persistentSubscriptionsClient = persistentSubscriptionsClient;
-        _redisProvider = redisProvider;
-        _users = _redisProvider.RedisCollection<UserDocument>();
+        _users = users;
     }
 
     public async Task SubscribeToStream(
@@ -95,8 +93,11 @@ public class UserStreamSubscription
     {
         switch (eventType)
         {
-            case "UserCreatedEvent":
+            case nameof(UserCreatedEvent):
                 await HandleUserCreated(eventData, cancellationToken);
+                break;
+            case nameof(UserDeactivatedEvent):
+                await HandleUserDeactivated(eventData, cancellationToken);
                 break;
             // Add more event handlers as needed
         }
@@ -125,15 +126,39 @@ public class UserStreamSubscription
                 LastModified = eventData.LastModified
             };
 
-            await _users.InsertAsync(userDocument, WhenKey.Always);
+            await _users.AddAsync(userDocument, cancellationToken);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             throw;
         }
+    }
 
+    private async Task HandleUserDeactivated(
+        EventRecord eventRecord,
+        CancellationToken cancellationToken
+    )
+    {
+        try
+        {
+            var eventData = DeserializeEvent<UserDeactivatedEvent>(eventRecord);
 
+            if (eventData is null) return;
+
+            var user = await _users.GetByIdAsync(eventData.UserId, cancellationToken);
+
+            if (user is null) return;
+
+            user.IsActive = false;
+
+            await _users.UpdateAsync(user, cancellationToken);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     private static T? DeserializeEvent<T>(

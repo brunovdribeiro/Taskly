@@ -172,7 +172,12 @@
     },
     "/api/users/{id}": {
       "get": {
-        "operationId": "GetApiUsers",
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get a user by ID",
+        "description": "Retrieves a specific user by their unique identifier",
+        "operationId": "GetUserById",
         "parameters": [
           {
             "name": "id",
@@ -204,7 +209,12 @@
     },
     "/api/users": {
       "post": {
-        "operationId": "PostApiUsers",
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create a new user",
+        "description": "Creates a new user with the provided information",
+        "operationId": "CreateUser",
         "requestBody": {
           "x-name": "createUserDto",
           "content": {
@@ -218,6 +228,12 @@
           "x-position": 1
         },
         "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {}
+            }
+          },
           "201": {
             "description": "",
             "content": {
@@ -241,7 +257,12 @@
         }
       },
       "get": {
-        "operationId": "GetApiUsersAll",
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get all users",
+        "description": "Retrieves a list of all users in the system",
+        "operationId": "GetAllUsers",
         "responses": {
           "200": {
             "description": "",
@@ -261,7 +282,49 @@
     },
     "/api/users/{id}/deactivate": {
       "put": {
-        "operationId": "PutApiUsersDeactivate",
+        "tags": [
+          "Users"
+        ],
+        "summary": "Deactivate a user",
+        "description": "Deactivates an existing user by their ID",
+        "operationId": "DeactivateUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/users/{id}/activate": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Activate a user",
+        "description": "Activates an existing user by their ID",
+        "operationId": "ActivateUser",
         "parameters": [
           {
             "name": "id",
