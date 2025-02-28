@@ -302,6 +302,12 @@
         ],
         "responses": {
           "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "202": {
             "description": "",
             "content": {
               "application/json": {
