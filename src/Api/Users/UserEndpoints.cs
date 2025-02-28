@@ -32,8 +32,8 @@ public static class UserEndpoints
                 operation.Responses["404"].Description = "User not found";
                 return operation;
             })
-            .Produces<UserDto>(200)
-            .Produces(404);
+            .Produces<UserDto>()
+            .Produces(StatusCodes.Status404NotFound);
 
         group.MapPost("/", CreateUser)
             .WithName("CreateUser")
@@ -46,7 +46,7 @@ public static class UserEndpoints
                 operation.Responses["400"].Description = "Invalid request data";
                 return operation;
             })
-            .Produces<UserDto>(201)
+            .Produces<UserDto>(StatusCodes.Status201Created)
             .ProducesValidationProblem();
 
         group.MapPut("/{id}/deactivate", DeactivateUser)
@@ -56,11 +56,11 @@ public static class UserEndpoints
             .WithOpenApi(operation =>
             {
                 operation.Parameters[0].Description = "The unique identifier of the user to deactivate";
-                operation.Responses["200"].Description = "User deactivated successfully";
+                operation.Responses["202"].Description = "User deactivated successfully";
                 operation.Responses["404"].Description = "User not found";
                 return operation;
             })
-            .Produces<UserDto>(200)
+            .Produces<UserDto>(StatusCodes.Status202Accepted)
             .Produces(404);
 
         group.MapPut("/{id}/activate", ActivateUser)
@@ -135,7 +135,7 @@ public static class UserEndpoints
         var result = await mediator.Send(command, cancellationToken);
 
         return result.IsSuccess
-            ? Results.Ok(result.Value)
+            ? Results.AcceptedAtRoute("GetUserById", new { id = result.Value.Id }, result)
             : Results.NotFound(result.Errors);
     }
 
@@ -149,8 +149,8 @@ public static class UserEndpoints
         var result = await mediator.Send(command, cancellationToken);
 
         return result.IsSuccess
-            ? Results.Ok(result.Value)
-            : Results.BadRequest(result.Errors);
+            ? Results.AcceptedAtRoute("GetUserById", new { id = result.Value.Id }, result)
+            : Results.NotFound(result.Errors);
     }
 
     private static async Task<IResult> GetAllUsers(
