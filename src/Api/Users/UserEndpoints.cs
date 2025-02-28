@@ -1,4 +1,3 @@
-using Application.Common.Exceptions;
 using Application.Features.Users.Commands.Activate;
 using Application.Features.Users.Commands.CreateUser;
 using Application.Features.Users.Commands.DeactivateUser;
@@ -8,7 +7,6 @@ using Application.Features.Users.Queries.GetAllUsers;
 using Application.Features.Users.Queries.GetUserByIdQuery;
 using Ardalis.Result.AspNetCore;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Users;
@@ -122,7 +120,7 @@ public static class UserEndpoints
         var result = await mediator.Send(command, cancellationToken);
 
         return result.IsSuccess
-            ? Results.Created($"api/users/{result.Value.Id}", result.Value)
+            ? Results.CreatedAtRoute("GetUserById", new { id = result.Value.Id }, result)
             : Results.BadRequest(result.Errors);
 
     }
