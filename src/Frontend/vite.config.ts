@@ -43,7 +43,9 @@ export default defineConfig({
     plugins: [plugin(), tailwindcss()],
     resolve: {
         alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
+            '@': fileURLToPath(new URL('./src', import.meta.url)),
+            '@models': fileURLToPath(new URL('./src/api/generated', import.meta.url)),
+            '@layout': fileURLToPath(new URL('./src/layouts', import.meta.url)),
         }
     },
     server: {

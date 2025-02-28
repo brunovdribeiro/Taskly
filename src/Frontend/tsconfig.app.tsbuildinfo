@@ -1,1 +1,0 @@
-{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/api/generated/models.ts","./src/features/users/users.tsx","./src/features/users/usersapi.ts","./src/stores/apistore.ts"],"version":"5.7.3"}

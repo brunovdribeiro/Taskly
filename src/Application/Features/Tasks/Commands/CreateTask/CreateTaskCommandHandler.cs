@@ -2,6 +2,7 @@
 
 using Application.Common.Interfaces;
 using Application.Common.Interfacoes;
+using Ardalis.Result;
 using Domain.ValueObjects;
 using MediatR;
 using Task = Domain.Aggregates.Task;
@@ -12,9 +13,9 @@ public class CreateTaskCommandHandler(
     ITaskEventStore eventStore,
     ITaskSnapshotRepository snapshotRepository
 )
-    : IRequestHandler<CreateTaskCommand, Guid>
+    : IRequestHandler<CreateTaskCommand, Result<Guid>>
 {
-    public async Task<Guid> Handle(
+    public async Task<Result<Guid>> Handle(
         CreateTaskCommand request,
         CancellationToken cancellationToken
     )

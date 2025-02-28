@@ -1,13 +1,13 @@
-using Application.Common;
-using Application.Common.Exceptions;
 using Application.Features.Users.Dtos;
 using Application.Features.Users.Interfaces;
+using Ardalis.Result;
 using Domain.ValueObjects;
 using MediatR;
+using Shared.Errors;
 
 namespace Application.Features.Users.Commands.DeactivateUser;
 
-public record DeactivateUserCommand : ICommand<UserDto>
+public record DeactivateUserCommand : IRequest<Result<UserDto>>
 {
     public Guid UserId { get; init; }
 }
@@ -15,9 +15,9 @@ public record DeactivateUserCommand : ICommand<UserDto>
 public class DeactivateUserCommandHandler(
     IUserEventStore eventStore,
     IUserSnapshotRepository snapshotRepository
-) : IRequestHandler<DeactivateUserCommand, UserDto>
+) : IRequestHandler<DeactivateUserCommand, Result<UserDto>>
 {
-    public async Task<UserDto> Handle(
+    public async Task<Result<UserDto>> Handle(
         DeactivateUserCommand request,
         CancellationToken cancellationToken
     )
@@ -26,21 +26,37 @@ public class DeactivateUserCommandHandler(
         var user = await snapshotRepository.GetByIdAsync(userId, cancellationToken);
 
         if (user is null)
-            throw new NotFoundException($"User with id {request.UserId} not found");
+            return Result<UserDto>.Error(
+                UserErrors.NotFound(request.UserId).Message
+            );
 
-        user.Deactivate();
+        if (!user.IsActive)
+            return Result<UserDto>.Error(
+                UserErrors.AlreadyDeactivated(request.UserId).Message
+            );
 
-        await eventStore.AppendEventsAsync(userId, user.Events, cancellationToken);
-        await snapshotRepository.SaveSnapshotAsync(user, cancellationToken);
-
-        return new UserDto
+        try 
         {
-            Id = user.Id.Value,
-            Email = user.Email,
-            Name = user.Name,
-            IsActive = user.IsActive,
-            CreatedAt = user.CreatedAt,
-            LastModified = user.LastModified
-        };
+            user.Deactivate();
+
+            await eventStore.AppendEventsAsync(userId, user.Events, cancellationToken);
+            await snapshotRepository.SaveSnapshotAsync(user, cancellationToken);
+
+            return Result<UserDto>.Success(new UserDto
+            {
+                Id = user.Id.Value,
+                Email = user.Email,
+                Name = user.Name,
+                IsActive = user.IsActive,
+                CreatedAt = user.CreatedAt,
+                LastModified = user.LastModified
+            });
+        }
+        catch (Exception ex)
+        {
+            return Result<UserDto>.Error(
+                UserErrors.DeactivationFailed(request.UserId, ex.Message).Message
+            );
+        }
     }
 }

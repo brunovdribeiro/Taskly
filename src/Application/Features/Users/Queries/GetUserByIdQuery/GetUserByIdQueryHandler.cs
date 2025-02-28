@@ -1,15 +1,16 @@
-using Application.Common.Exceptions;
 using Application.Features.Users.Dtos;
 using Application.Features.Users.Interfaces;
+using Ardalis.Result;
 using MediatR;
+using static Shared.Errors.UserErrors;
 
 namespace Application.Features.Users.Queries.GetUserByIdQuery;
 
 public class GetUserByIdQueryHandler(
     IUserRead read
-) : IRequestHandler<GetUserByIdQuery, UserDto>
+) : IRequestHandler<GetUserByIdQuery, Result<UserDto>>
 {
-    public async Task<UserDto> Handle(
+    public async Task<Result<UserDto>> Handle(
         GetUserByIdQuery request,
         CancellationToken cancellationToken
     )
@@ -17,8 +18,9 @@ public class GetUserByIdQueryHandler(
         var user = await read.GetByIdAsync(request.Id, cancellationToken);
 
         if (user is null)
-            throw new NotFoundException($"User with id {request.Id} not found");
+            return Result<UserDto>.NotFound(
+                NotFound(request.Id).Message);
 
-        return user;
+        return Result<UserDto>.Success(user);
     }
 }

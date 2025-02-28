@@ -1,15 +1,16 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Features.Tasks.Dtos;
+using Ardalis.Result;
 using MediatR;
 
 namespace Application.Features.Tasks.Queries.GetTaskById;
 
 public class GetTaskByIdQueryHandler(
     ITaskRead read
-) : IRequestHandler<GetTaskByIdQuery, TaskDto>
+) : IRequestHandler<GetTaskByIdQuery, Result<TaskDto>>
 {
-    public async Task<TaskDto> Handle(
+    public async Task<Result<TaskDto>> Handle(
         GetTaskByIdQuery request,
         CancellationToken cancellationToken
     )

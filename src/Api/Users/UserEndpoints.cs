@@ -6,9 +6,12 @@ using Application.Features.Users.Dtos;
 using Application.Features.Users.Interfaces;
 using Application.Features.Users.Queries.GetAllUsers;
 using Application.Features.Users.Queries.GetUserByIdQuery;
+using Ardalis.Result.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+
+namespace Api.Users;
 
 public static class UserEndpoints
 {
@@ -90,22 +93,20 @@ public static class UserEndpoints
         return routes;
     }
 
-    private static async Task<Results<Ok<UserDto>, NotFound>> GetUserById(
+    private static async Task<IResult> GetUserById(
         [FromRoute] Guid id,
         IMediator mediator,
         CancellationToken cancellationToken
     )
     {
         var query = new GetUserByIdQuery(id);
-        var user = await mediator.Send(query, cancellationToken);
+        var result = await mediator.Send(query, cancellationToken);
 
-        if (user is null)
-            return TypedResults.NotFound();
+        return result.ToMinimalApiResult();
 
-        return TypedResults.Ok(user);
     }
 
-    private static async Task<Results<Created<UserDto>, ValidationProblem>> CreateUser(
+    private static async Task<IResult> CreateUser(
         [FromBody] CreateUserDto createUserDto,
         IMediator mediator,
         IUserRead userRead,
@@ -118,56 +119,50 @@ public static class UserEndpoints
             Name = createUserDto.Name
         };
 
-        var user = await mediator.Send(command, cancellationToken);
+        var result = await mediator.Send(command, cancellationToken);
 
-        return TypedResults.Created($"/api/users/{user.Id}", user);
+        return result.IsSuccess
+            ? Results.Created($"api/users/{result.Value.Id}", result.Value)
+            : Results.BadRequest(result.Errors);
+
     }
 
-    private static async Task<Results<Ok<UserDto>, NotFound>> DeactivateUser(
+    private static async Task<IResult> DeactivateUser(
         [FromRoute] Guid id,
         IMediator mediator,
         CancellationToken cancellationToken
     )
     {
         var command = new DeactivateUserCommand { UserId = id };
+        var result = await mediator.Send(command, cancellationToken);
 
-        try
-        {
-            var user = await mediator.Send(command, cancellationToken);
-            return TypedResults.Ok(user);
-        }
-        catch (NotFoundException)
-        {
-            return TypedResults.NotFound();
-        }
+        return result.IsSuccess
+            ? Results.Ok(result.Value)
+            : Results.NotFound(result.Errors);
     }
 
-    private static async Task<Results<Ok<UserDto>, NotFound>> ActivateUser(
+    private static async Task<IResult> ActivateUser(
         [FromRoute] Guid id,
         IMediator mediator,
         CancellationToken cancellationToken
     )
     {
         var command = new ActivateUserCommand { UserId = id };
+        var result = await mediator.Send(command, cancellationToken);
 
-        try
-        {
-            var user = await mediator.Send(command, cancellationToken);
-            return TypedResults.Ok(user);
-        }
-        catch (NotFoundException)
-        {
-            return TypedResults.NotFound();
-        }
+        return result.IsSuccess
+            ? Results.Ok(result.Value)
+            : Results.BadRequest(result.Errors);
     }
 
-    private static async Task<Ok<IEnumerable<UserDto>>> GetAllUsers(
+    private static async Task<IResult> GetAllUsers(
         IMediator mediator,
         CancellationToken cancellationToken
     )
     {
         var query = new GetAllUsersQuery();
-        var users = await mediator.Send(query, cancellationToken);
-        return TypedResults.Ok(users);
+        var result = await mediator.Send(query, cancellationToken);
+
+        return Results.Ok(result.Value);
     }
 }

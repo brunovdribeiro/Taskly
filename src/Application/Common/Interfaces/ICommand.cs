@@ -1,9 +1,10 @@
+using Ardalis.Result;
 using MediatR;
 
-namespace Application.Common;
+namespace Application.Common.Interfaces;
 
-public interface ICommand<out TResponse>
-    : IRequest<TResponse> { }
+public interface ICommand<TResponse>
+    : IRequest<Result<TResponse>> { }
 
 public interface ICommand
-    : IRequest { }
+    : IRequest<Result> { }

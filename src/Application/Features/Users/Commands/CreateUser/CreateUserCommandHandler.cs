@@ -1,13 +1,13 @@
-using Application.Common;
 using Application.Features.Users.Dtos;
 using Application.Features.Users.Interfaces;
+using Ardalis.Result;
 using Domain.Aggregates;
 using Domain.ValueObjects;
 using MediatR;
 
 namespace Application.Features.Users.Commands.CreateUser;
 
-public record CreateUserCommand : ICommand<UserDto>
+public record CreateUserCommand : IRequest<Result<UserDto>>
 {
     public string Email { get; init; }
     public string Name { get; init; }
@@ -17,30 +17,50 @@ public class CreateUserCommandHandler(
     IUserEventStore eventStore,
     IUserSnapshotRepository snapshotRepository
 )
-    : IRequestHandler<CreateUserCommand, UserDto>
+    : IRequestHandler<CreateUserCommand, Result<UserDto>>
 {
-    public async Task<UserDto> Handle(
+    public async Task<Result<UserDto>> Handle(
         CreateUserCommand request,
         CancellationToken cancellationToken
     )
     {
+        // Validate input
+        if (string.IsNullOrWhiteSpace(request.Email))
+            return Result<UserDto>.Invalid(
+                new ValidationError("Email is required")
+            );
+
+        if (string.IsNullOrWhiteSpace(request.Name))
+            return Result<UserDto>.Invalid(
+                new ValidationError("Name is required")
+            );
+
         var userId = UserId.New();
 
-        var user = User.Create(
-            userId,
-            request.Email,
-            request.Name);
-
-        await eventStore.AppendEventsAsync(userId, user.Events, cancellationToken);
-        await snapshotRepository.SaveSnapshotAsync(user, cancellationToken);
-
-        return new UserDto
+        try 
         {
-            Id = userId.Value,
-            Email = user.Email,
-            Name = user.Name,
-            CreatedAt = user.CreatedAt,
-            LastModified = user.LastModified
-        };
+            var user = User.Create(
+                userId,
+                request.Email,
+                request.Name);
+
+            await eventStore.AppendEventsAsync(userId, user.Events, cancellationToken);
+            await snapshotRepository.SaveSnapshotAsync(user, cancellationToken);
+
+            return Result<UserDto>.Success(new UserDto
+            {
+                Id = userId.Value,
+                Email = user.Email,
+                Name = user.Name,
+                CreatedAt = user.CreatedAt,
+                LastModified = user.LastModified
+            });
+        }
+        catch (Exception ex)
+        {
+            return Result<UserDto>.Error(
+                $"Failed to create user: {ex.Message}"
+            );
+        }
     }
 }
