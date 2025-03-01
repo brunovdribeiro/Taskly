@@ -49,11 +49,3 @@ public record UserCreatedEvent : IEvent
     public DateTime CreatedAt { get; }
     public DateTime? LastModified { get; }
 }
-
-public record UserDeactivatedEvent(
-    Guid UserId
-) : IEvent;
-
-public record UserActivatedEvent(
-    Guid UserId
-) : IEvent;

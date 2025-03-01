@@ -7,11 +7,6 @@ using Shared.Errors;
 
 namespace Application.Features.Users.Commands.DeactivateUser;
 
-public record DeactivateUserCommand : IRequest<Result<UserDto>>
-{
-    public Guid UserId { get; init; }
-}
-
 public class DeactivateUserCommandHandler(
     IUserEventStore eventStore,
     IUserSnapshotRepository snapshotRepository

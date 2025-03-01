@@ -7,11 +7,6 @@ using Shared.Errors;
 
 namespace Application.Features.Users.Commands.Activate;
 
-public record ActivateUserCommand : IRequest<Result<UserDto>>
-{
-    public Guid UserId { get; init; }
-}
-
 public class ActivateUserCommandHandler(
     IUserEventStore eventStore,
     IUserSnapshotRepository snapshotRepository
