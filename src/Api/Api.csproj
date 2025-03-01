@@ -41,15 +41,10 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
-
+    
     <Target Name="GenerateSwaggerJson" BeforeTargets="GenerateTypeScriptModels">
-        <PropertyGroup>
-            <BuildConfiguration>$(Configuration)</BuildConfiguration>
-            <!-- Default to Release if not set -->
-            <BuildConfiguration Condition="'$(BuildConfiguration)' == ''">Release</BuildConfiguration>
-        </PropertyGroup>
-        <!-- Update the command to use the correct configuration -->
-        <Exec Command="$(NSwagExe_Net90) run nswag.json /variables:Configuration=$(BuildConfiguration)" />
+        <!-- Run NSwag -->
+        <Exec Command="$(NSwagExe_Net90) run nswag.json"/>
     </Target>
     
     <Target Name="GenerateTypeScriptModels" BeforeTargets="Build">
