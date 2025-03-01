@@ -13,7 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # Important for GitVersion to work properly
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}  # Add this for PR support
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -21,15 +22,15 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.10.2
+        uses: gittools/actions/gitversion/setup@v0.9.15
         with:
-          versionSpec: '6.x'
+          versionSpec: '5.12.0'
 
       - name: Determine Version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.10.2
+        uses: gittools/actions/gitversion/execute@v0.9.15
 
-      - name: Display Version
+      # Add build step to verify versioning
+      - name: Build
         run: |
-          echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
-          echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
+          dotnet build --configuration Release /p:Version=${{ steps.gitversion.outputs.semVer }}
