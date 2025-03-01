@@ -6,7 +6,6 @@ branches:
   main:
     regex: ^main$
     mode: ContinuousDelivery
-    tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
@@ -14,24 +13,22 @@ branches:
   develop:
     regex: ^develop$
     mode: ContinuousDeployment
-    tag: alpha
     increment: Minor
     track-merge-target: true
     source-branches: ['main']
+    is-mainline: false
   release:
     regex: ^release?[/-]
     mode: ContinuousDelivery
-    tag: beta
     increment: None
     source-branches: ['develop']
+    is-release-branch: true
   feature:
     regex: ^feature?[/-]
     mode: ContinuousDelivery
-    tag: useBranchName
     increment: Inherit
     source-branches: ['develop']
   hotfix:
     regex: ^hotfix?[/-]
-    tag: beta
     increment: Patch
     source-branches: ['main']

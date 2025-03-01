@@ -41,13 +41,17 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
-    
-    <Target Name="GenerateSwaggerJson" BeforeTargets="GenerateTypeScriptModels">
-        <!-- Run NSwag -->
+
+    <PropertyGroup>
+        <IsGitHubBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</IsGitHubBuild>
+        <IsGitHubBuild Condition="'$(GITHUB_ACTIONS)' == ''">false</IsGitHubBuild>
+    </PropertyGroup>
+
+    <Target Name="GenerateSwaggerJson" BeforeTargets="GenerateTypeScriptModels" Condition="'$(IsGitHubBuild)' != 'true'">
         <Exec Command="$(NSwagExe_Net90) run nswag.json"/>
     </Target>
-    
-    <Target Name="GenerateTypeScriptModels" BeforeTargets="Build">
+
+    <Target Name="GenerateTypeScriptModels" BeforeTargets="Build" Condition="'$(IsGitHubBuild)' != 'true'">
         <PropertyGroup>
             <SwaggerFile>$([System.IO.Path]::Combine($(ProjectDir), 'swagger.json'))</SwaggerFile>
             <ModelsDir>$([System.IO.Path]::Combine($(ProjectDir), '..', 'Frontend', 'src', 'api', 'generated'))</ModelsDir>
@@ -55,6 +59,7 @@
         <MakeDir Directories="$(ModelsDir)"/>
         <Exec WorkingDirectory="$(ProjectDir)" Command="$(NSwagExe_Net90) openapi2tsclient /input:$(SwaggerFile) /output:$(ModelsDir)/models.ts /Template:Fetch /generateClientClasses:false /typeStyle:Interface /dateTimeType:Date /markOptionalProperties:true /nullValue:undefined /generateOptionalParameters:true"/>
     </Target>
+
 
     <Target Name="BuildReactApp" BeforeTargets="Build">
         <Exec WorkingDirectory="$(SpaRoot)" Command="npm install"/>
