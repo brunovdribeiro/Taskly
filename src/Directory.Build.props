@@ -1,0 +1,16 @@
+<Project>
+    <PropertyGroup>
+        <Version>$(GitVersion_SemVer)</Version>
+        <AssemblyVersion>$(GitVersion_AssemblySemVer)</AssemblyVersion>
+        <FileVersion>$(GitVersion_AssemblySemFileVer)</FileVersion>
+        <InformationalVersion>$(GitVersion_InformationalVersion)</InformationalVersion>
+    </PropertyGroup>
+
+    <!-- Optional: Add this target to verify versions during build -->
+    <Target Name="PrintVersionInfo" BeforeTargets="Build">
+        <Message Importance="High" Text="Version: $(Version)" />
+        <Message Importance="High" Text="AssemblyVersion: $(AssemblyVersion)" />
+        <Message Importance="High" Text="FileVersion: $(FileVersion)" />
+        <Message Importance="High" Text="InformationalVersion: $(InformationalVersion)" />
+    </Target>
+</Project>

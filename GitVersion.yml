@@ -1,0 +1,37 @@
+mode: MainLine
+major-version-bump-message: "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?(!:|:.*\\n\\n.*BREAKING CHANGE:\\s.*)?"
+minor-version-bump-message: "^(feat)(\\([\\w\\s-]*\\))?:"
+patch-version-bump-message: "^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?:"
+branches:
+  main:
+    regex: ^main$
+    mode: ContinuousDelivery
+    tag: ''
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    source-branches: [ 'develop', 'release' ]
+  develop:
+    regex: ^develop$
+    mode: ContinuousDeployment
+    tag: alpha
+    increment: Minor
+    track-merge-target: true
+    source-branches: ['main']
+  release:
+    regex: ^release?[/-]
+    mode: ContinuousDelivery
+    tag: beta
+    increment: None
+    source-branches: ['develop']
+  feature:
+    regex: ^feature?[/-]
+    mode: ContinuousDelivery
+    tag: useBranchName
+    increment: Inherit
+    source-branches: ['develop']
+  hotfix:
+    regex: ^hotfix?[/-]
+    tag: beta
+    increment: Patch
+    source-branches: ['main']
