@@ -24,7 +24,7 @@ public static class UserEndpoints
         group.MapGet("/{id}", GetUserById)
             .WithName("GetUserById")
             .WithSummary("Get a user by ID")
-            .WithDescription("Retrieves a specific user by their unique identifier")
+            .WithDescription("Retrieves a specific user by their unique identifier.")
             .WithOpenApi(operation =>
             {
                 operation.Parameters[0].Description = "The unique identifier of the user";
