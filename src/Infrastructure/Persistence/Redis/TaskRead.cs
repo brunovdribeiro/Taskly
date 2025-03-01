@@ -1,5 +1,5 @@
-using Application.Common.Interfaces;
 using Application.Features.Tasks.Dtos;
+using Application.Features.Tasks.Interfaces;
 using Domain.Enums;
 using Infrastructure.Persistence.Redis.Documents;
 using Redis.OM;

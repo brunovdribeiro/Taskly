@@ -1,6 +1,6 @@
 using Domain.ValueObjects;
 
-namespace Application.Common.Interfaces;
+namespace Application.Features.Tasks.Interfaces;
 
 public interface ITaskSnapshotRepository
 {

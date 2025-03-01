@@ -1,12 +1,13 @@
-using Application.Common.Interfaces;
-using Application.Common.Interfacoes;
 using Application.Features.Tasks.Commands.CreateTask;
 using Application.Features.Tasks.Dtos;
+using Application.Features.Tasks.Interfaces;
 using Domain.ValueObjects;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Task = Domain.Aggregates.Task;
+
+namespace Api.Tasks;
 
 public static class TaskEndpoints
 {

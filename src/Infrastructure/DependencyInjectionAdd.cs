@@ -1,5 +1,4 @@
-using Application.Common.Interfaces;
-using Application.Common.Interfacoes;
+using Application.Features.Tasks.Interfaces;
 using Application.Features.Users.Interfaces;
 using EventStore.Client;
 using Infrastructure.Persistence.EventStore;

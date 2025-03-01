@@ -1,4 +1,4 @@
-using Application.Common.Interfaces;
+using Application.Features.Tasks.Interfaces;
 using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Task = Domain.Aggregates.Task;

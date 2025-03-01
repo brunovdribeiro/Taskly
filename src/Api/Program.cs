@@ -1,3 +1,4 @@
+using Api.Tasks;
 using Api.Users;
 using Application;
 using Infrastructure;

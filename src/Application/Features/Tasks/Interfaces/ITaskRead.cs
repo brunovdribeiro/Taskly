@@ -2,7 +2,7 @@
 
 using Application.Features.Tasks.Dtos;
 
-namespace Application.Common.Interfaces;
+namespace Application.Features.Tasks.Interfaces;
 
 public interface ITaskRead
 {

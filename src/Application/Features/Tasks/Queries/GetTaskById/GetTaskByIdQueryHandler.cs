@@ -1,6 +1,6 @@
 using Application.Common.Exceptions;
-using Application.Common.Interfaces;
 using Application.Features.Tasks.Dtos;
+using Application.Features.Tasks.Interfaces;
 using Ardalis.Result;
 using MediatR;
 

@@ -1,7 +1,6 @@
 // Features/Tasks/Commands/CreateTask/CreateTaskCommandHandler.cs
 
-using Application.Common.Interfaces;
-using Application.Common.Interfacoes;
+using Application.Features.Tasks.Interfaces;
 using Ardalis.Result;
 using Domain.ValueObjects;
 using MediatR;

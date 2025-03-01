@@ -1,9 +1,8 @@
-﻿using System;
+﻿#nullable disable
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
-#nullable disable
-
-namespace Infrastructure.Persistences.Postgres.Migrations
+namespace Infrastructure.Persistence.Postgres.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration

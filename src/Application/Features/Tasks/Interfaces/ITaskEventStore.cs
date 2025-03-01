@@ -1,7 +1,7 @@
 using Domain.Common;
 using Domain.ValueObjects;
 
-namespace Application.Common.Interfacoes;
+namespace Application.Features.Tasks.Interfaces;
 
 public interface ITaskEventStore
 {
