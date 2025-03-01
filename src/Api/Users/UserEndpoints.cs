@@ -29,7 +29,7 @@ public static class UserEndpoints
             {
                 operation.Parameters[0].Description = "The unique identifier of the user";
                 operation.Responses["200"].Description = "User found successfully";
-                operation.Responses["404"].Description = "User not found";
+                operation.Responses["404"].Description = "User not found.";
                 return operation;
             })
             .Produces<UserDto>()
