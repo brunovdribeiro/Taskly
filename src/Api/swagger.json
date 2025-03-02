@@ -170,43 +170,6 @@
         }
       }
     },
-    "/api/users/{id}": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Get a user by ID",
-        "description": "Retrieves a specific user by their unique identifier.",
-        "operationId": "GetUserById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "guid"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": ""
-          }
-        }
-      }
-    },
     "/api/users": {
       "post": {
         "tags": [
@@ -360,7 +323,7 @@
         }
       }
     },
-    "/api/api/version": {
+    "/api/v1/api/version": {
       "get": {
         "tags": [
           "System"
@@ -376,6 +339,42 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "ApiUsersv1GetUserByIdGetUserByIdEndpoint",
+        "requestBody": {
+          "x-name": "GetUserByIdRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUserByIdRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
           }
         }
       }
@@ -580,6 +579,16 @@
           "buildDate": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "GetUserByIdRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
           }
         }
       }

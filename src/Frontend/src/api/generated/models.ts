@@ -78,3 +78,7 @@ export interface VersionResponse {
     environment?: string;
     buildDate?: Date;
 }
+
+export interface GetUserByIdRequest {
+    id?: string;
+}

@@ -44,7 +44,10 @@ app.MapFallbackToFile("index.html");
 
 app.UseFastEndpoints(c =>
 {
-    c.Endpoints.RoutePrefix = "api"; // Optional: adds 'api' prefix to all FastEndpoints routes
+    c.Endpoints.RoutePrefix = "api";
+    c.Versioning.Prefix = "v";
+    c.Versioning.PrependToRoute = true;
+    c.Versioning.DefaultVersion = 1;
 });
 
 

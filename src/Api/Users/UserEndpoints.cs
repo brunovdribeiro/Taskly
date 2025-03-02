@@ -4,8 +4,6 @@ using Application.Features.Users.Commands.DeactivateUser;
 using Application.Features.Users.Dtos;
 using Application.Features.Users.Interfaces;
 using Application.Features.Users.Queries.GetAllUsers;
-using Application.Features.Users.Queries.GetUserByIdQuery;
-using Ardalis.Result.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,21 +18,7 @@ public static class UserEndpoints
         var group = routes.MapGroup("/users")
             .WithTags("Users")
             .WithOpenApi();
-
-        group.MapGet("/{id}", GetUserById)
-            .WithName("GetUserById")
-            .WithSummary("Get a user by ID")
-            .WithDescription("Retrieves a specific user by their unique identifier.")
-            .WithOpenApi(operation =>
-            {
-                operation.Parameters[0].Description = "The unique identifier of the user";
-                operation.Responses["200"].Description = "User found successfully";
-                operation.Responses["404"].Description = "User not found.";
-                return operation;
-            })
-            .Produces<UserDto>()
-            .Produces(StatusCodes.Status404NotFound);
-
+        
         group.MapPost("/", CreateUser)
             .WithName("CreateUser")
             .WithSummary("Create a new user")
@@ -74,7 +58,7 @@ public static class UserEndpoints
                 operation.Responses["404"].Description = "User not found";
                 return operation;
             })
-            .Produces<UserDto>(200)
+            .Produces<UserDto>()
             .Produces(404);
 
         group.MapGet("/", GetAllUsers)
@@ -86,22 +70,9 @@ public static class UserEndpoints
                 operation.Responses["200"].Description = "Successfully retrieved all users";
                 return operation;
             })
-            .Produces<IEnumerable<UserDto>>(200);
+            .Produces<IEnumerable<UserDto>>();
 
         return routes;
-    }
-
-    private static async Task<IResult> GetUserById(
-        [FromRoute] Guid id,
-        IMediator mediator,
-        CancellationToken cancellationToken
-    )
-    {
-        var query = new GetUserByIdQuery(id);
-        var result = await mediator.Send(query, cancellationToken);
-
-        return result.ToMinimalApiResult();
-
     }
 
     private static async Task<IResult> CreateUser(
