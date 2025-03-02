@@ -72,3 +72,9 @@ export interface CreateUserDto {
     email?: string;
     name?: string;
 }
+
+export interface VersionResponse {
+    version?: string;
+    environment?: string;
+    buildDate?: Date;
+}

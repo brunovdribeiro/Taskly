@@ -14,6 +14,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddSingleton<IGitVersionCalculator, GitVersionCalculator>();
 
 builder.Services.AddHealthChecks();
+builder.Services.AddFastEndpoints();
 
 var app = builder.Build();
 
@@ -21,7 +22,6 @@ var app = builder.Build();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-builder.Services.AddFastEndpoints();
 
 
 // Map API endpoints under /api

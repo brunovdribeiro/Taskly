@@ -176,7 +176,7 @@
           "Users"
         ],
         "summary": "Get a user by ID",
-        "description": "Retrieves a specific user by their unique identifier",
+        "description": "Retrieves a specific user by their unique identifier.",
         "operationId": "GetUserById",
         "parameters": [
           {
@@ -356,6 +356,26 @@
           },
           "404": {
             "description": ""
+          }
+        }
+      }
+    },
+    "/api/api/version": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "operationId": "ApiVersioningVersionEndpoint",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VersionResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -544,6 +564,22 @@
           },
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "VersionResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "environment": {
+            "type": "string"
+          },
+          "buildDate": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       }
