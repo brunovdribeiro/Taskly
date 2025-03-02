@@ -12,5 +12,6 @@
         <Message Importance="High" Text="AssemblyVersion: $(AssemblyVersion)" />
         <Message Importance="High" Text="FileVersion: $(FileVersion)" />
         <Message Importance="High" Text="InformationalVersion: $(InformationalVersion)" />
+        <Message Importance="High" Text="PackageVersion: $(PackageVersion)" />
     </Target>
 </Project>
